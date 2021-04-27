@@ -18,7 +18,7 @@ function Login({ setUser }) {
   const [loading, setLoading] = useState(false);
   return (
     <Container>
-      <img className="center" src={logo} />
+      <img alt="logo" className="center" src={logo} />
       <h2 className="text-center">Login</h2>
       <Row className="justify-content-md-center">
         <Col xs lg="4" className="text-center">

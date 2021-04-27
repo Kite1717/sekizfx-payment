@@ -22,6 +22,12 @@ import btc from "../assets/logos/btc.png";
 import mefete from "../assets/logos/mefete.png";
 import logo2 from "../assets/logo2.svg";
 
+const paymentsSUBID = [
+  { title: "Anında Kredi Kartı", key: "APID59beRzS7Xhlot61C", id: 1 },
+  { title: "Anında Havale", key: "APIvzIzTPV5RpuIMDhCX", id: 2 },
+  { title: "Jet Papara", key: "APIu8OqRGyI2ovtuw2oO", id: 3 },
+  { title: "Anında Mefete", key: "APIlfMbLjPcJ7Tx3WN8c", id: 4 },
+];
 function Payment({ setUser, user }) {
   const [loading, setLoading] = useState(false);
   const [exchangeRate, setExchangeRate] = useState(1);
@@ -29,7 +35,7 @@ function Payment({ setUser, user }) {
   const [accounts, setAccounts] = useState([]);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
 
-  const [from, setFrom] = useState("Anında Kredi Kartı");
+  const [from, setFrom] = useState(paymentsSUBID[0]);
   const [trader, setTrader] = useState(null);
 
   const [transfers, setTransfers] = useState([]);
@@ -129,7 +135,9 @@ function Payment({ setUser, user }) {
   useEffect(() => {
     if (trader) {
       axios
-        .get(`http://localhost:4000/api/payments/my-transfers/${trader.id}`)
+        .get(
+          `https://sekizfx-payment-back.herokuapp.com/api/payments/my-transfers/${trader.id}`
+        )
         .then(({ data }) => {
           setTransfers(data.transfers);
         });
@@ -156,7 +164,7 @@ function Payment({ setUser, user }) {
   };
   return (
     <Container>
-      <img className="center" src={logo2} />
+      <img alt="payment-logo" className="center" src={logo2} />
       <h2>Make a Deposit</h2>
       <Formik
         initialValues={{
@@ -176,6 +184,7 @@ function Payment({ setUser, user }) {
           return errors;
         }}
         onSubmit={(values, { setSubmitting }) => {
+          console.log(from, "wwwww");
           setLoading(true);
           setSubmitting(true);
           if (values.to === "" && accounts.length > 0) {
@@ -193,14 +202,17 @@ function Payment({ setUser, user }) {
           }
 
           axios
-            .post("http://localhost:4000/api/payments/deposit", {
-              name: trader.first_name + " " + trader.second_name,
-              userId: trader.id,
-              tc: values.tc,
-              amount: values.amount,
-              from,
-              to: values.to,
-            })
+            .post(
+              "https://sekizfx-payment-back.herokuapp.com/api/payments/deposit",
+              {
+                name: trader.first_name + " " + trader.second_name,
+                userId: trader.id,
+                tc: values.tc,
+                amount: values.amount,
+                from,
+                to: values.to,
+              }
+            )
             .then(({ data }) => {
               window.open(data.data.link, "_blank");
               window.location.reload();
@@ -242,15 +254,17 @@ function Payment({ setUser, user }) {
                 // }}
                 as="select"
               >
-                <option selected={from === "Anında Kredi Kartı"}>
+                <option selected={from.title === "Anında Kredi Kartı"}>
                   Anında Kredi Kartı
                 </option>
-                <option selected={from === "Anında Havale"}>
+                <option selected={from.title === "Anında Havale"}>
                   Anında Havale
                 </option>
-                <option selected={from === "Jet Papara"}>Jet Papara</option>
+                <option selected={from.title === "Jet Papara"}>
+                  Jet Papara
+                </option>
                 {/* <option selected={from === "Anında BTC"}>Anında BTC</option> */}
-                <option selected={from === "Anında Mefete"}>
+                <option selected={from.title === "Anında Mefete"}>
                   Anında Mefete
                 </option>
               </Form.Control>
@@ -353,7 +367,7 @@ function Payment({ setUser, user }) {
           <div
             className="d-flex my-4 cp"
             onClick={() => {
-              setFrom("Anında Kredi Kartı");
+              setFrom(paymentsSUBID[0]);
               setShowPaymentModal(false);
             }}
           >
@@ -363,7 +377,7 @@ function Payment({ setUser, user }) {
           <div
             className="d-flex my-4 cp"
             onClick={() => {
-              setFrom("Anında Havale");
+              setFrom(paymentsSUBID[1]);
               setShowPaymentModal(false);
             }}
           >
@@ -373,7 +387,7 @@ function Payment({ setUser, user }) {
           <div
             className="d-flex my-4 cp"
             onClick={() => {
-              setFrom("Jet Papara");
+              setFrom(paymentsSUBID[2]);
               setShowPaymentModal(false);
             }}
           >
@@ -393,7 +407,7 @@ function Payment({ setUser, user }) {
           <div
             className="d-flex my-4 cp"
             onClick={() => {
-              setFrom("Anında Mefete");
+              setFrom(paymentsSUBID[3]);
               setShowPaymentModal(false);
             }}
           >

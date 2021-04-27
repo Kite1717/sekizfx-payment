@@ -2,6 +2,7 @@ import "./App.css";
 import React, { useState, useEffect } from "react";
 import Login from "./components/Login";
 import Payment from "./components/Payment";
+import Menu from "./components/Menu";
 function App() {
   const [user, setUser] = useState(undefined);
   const [loading, setLoading] = useState(true);
@@ -21,7 +22,10 @@ function App() {
           {user === null || user === undefined ? (
             <Login setUser={setUser} />
           ) : (
-            <Payment setUser={setUser} user={user} />
+            <>
+              <Menu setUser={setUser} user={user} />
+              <Payment setUser={setUser} user={user} />
+            </>
           )}
         </>
       )}
