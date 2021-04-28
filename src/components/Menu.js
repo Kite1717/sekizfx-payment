@@ -3,6 +3,8 @@ import { Navbar, Nav } from "react-bootstrap";
 function Menu({ user, setUser }) {
   const logOut = () => {
     setUser(null);
+    localStorage.removeItem("auth");
+    localStorage.removeItem("auth-admin");
   };
   return (
     <Navbar bg="primary" variant="dark">

@@ -3,36 +3,40 @@ import React, { useState, useEffect } from "react";
 import Login from "./components/Login";
 import Payment from "./components/Payment";
 import Menu from "./components/Menu";
+import Panel from "./components/Panel";
 function App() {
   const [user, setUser] = useState(undefined);
   const [loading, setLoading] = useState(true);
+  const [isAdminLogin, setIsAdminLogin] = useState(false);
   useEffect(() => {
     if (localStorage.getItem("auth") === null) {
       setUser(null);
     } else {
-      console.log();
       setUser(JSON.parse(localStorage.getItem("auth")));
+    }
+    if (localStorage.getItem("auth-admin") !== null) {
+      setIsAdminLogin(true);
     }
     setLoading(false);
   }, []);
-  return (
 
-    
-    <>
-      {!loading && (
-        <>
-          {user === null || user === undefined ? (
-            <Login setUser={setUser} />
-          ) : (
-            <>
-              <Menu setUser={setUser} user={user} />
-              <Payment setUser={setUser} user={user} />
-            </>
-          )}
-        </>
-      )}
-    </>
-  );
+  const pageRenderer = () => {
+    if (!loading) {
+      if (isAdminLogin) {
+        return <Panel setUser={setUser} setIsAdminLogin={setIsAdminLogin} />;
+      } else if (user === null || user === undefined) {
+        return <Login setUser={setUser} setIsAdminLogin={setIsAdminLogin} />;
+      } else {
+        return (
+          <>
+            <Menu setUser={setUser} user={user} />
+            <Payment setUser={setUser} user={user} />
+          </>
+        );
+      }
+    }
+  };
+  return <>{pageRenderer()}</>;
 }
 
 export default App;

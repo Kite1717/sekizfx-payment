@@ -14,7 +14,7 @@ import {
   Container,
 } from "react-bootstrap";
 import logo from "../assets/logo.png";
-function Login({ setUser }) {
+function Login({ setUser, setIsAdminLogin }) {
   const [loading, setLoading] = useState(false);
   return (
     <Container>
@@ -40,48 +40,69 @@ function Login({ setUser }) {
             }}
             onSubmit={(values, { setSubmitting }) => {
               setLoading(true);
-              let formData = new FormData();
 
-              formData.append("user_email", values.email);
-              formData.append("password", values.password);
-
-              const rand = Math.floor(Math.random() * 9999999) + 100000;
-              const key = MD5("KxNSC7nYdl" + rand);
-              formData.append("key", key);
-              formData.append("rand_param", rand);
               axios
-                .post("https://my.sekizfx8.com/api/v_2/page/Login", formData)
+                .post("http://localhost:4000/api/user/login", values)
                 .then(({ data }) => {
-                  if (data.error_number !== 0 && data.result === "failed") {
-                    Swal.fire({
-                      icon: "error",
-                      title: "Oops...",
-                      text: data.description,
-                    });
-                  } else if (
-                    data.error_number === 0 &&
-                    data.result === "success"
-                  ) {
-                    setUser(data.values);
-                    localStorage.setItem("auth", JSON.stringify(data.values));
-                  } else {
-                    Swal.fire({
-                      icon: "error",
-                      title: "Oops...",
-                      text: "Trader Error",
-                    });
-                  }
+                  // admin
+
+                  localStorage.setItem("auth-admin", JSON.stringify(data));
+                  setIsAdminLogin(true);
                   setLoading(false);
                   setSubmitting(false);
                 })
                 .catch(() => {
-                  Swal.fire({
-                    icon: "error",
-                    title: "Oops...",
-                    text: "System Error",
-                  });
-                  setLoading(false);
-                  setSubmitting(false);
+                  // client
+
+                  let formData = new FormData();
+
+                  formData.append("user_email", values.email);
+                  formData.append("password", values.password);
+
+                  const rand = Math.floor(Math.random() * 9999999) + 100000;
+                  const key = MD5("KxNSC7nYdl" + rand);
+                  formData.append("key", key);
+                  formData.append("rand_param", rand);
+                  axios
+                    .post(
+                      "https://my.sekizfx8.com/api/v_2/page/Login",
+                      formData
+                    )
+                    .then(({ data }) => {
+                      if (data.error_number !== 0 && data.result === "failed") {
+                        Swal.fire({
+                          icon: "error",
+                          title: "Oops...",
+                          text: data.description,
+                        });
+                      } else if (
+                        data.error_number === 0 &&
+                        data.result === "success"
+                      ) {
+                        setUser(data.values);
+                        localStorage.setItem(
+                          "auth",
+                          JSON.stringify(data.values)
+                        );
+                      } else {
+                        Swal.fire({
+                          icon: "error",
+                          title: "Oops...",
+                          text: "Trader Error",
+                        });
+                      }
+                      setLoading(false);
+                      setSubmitting(false);
+                    })
+                    .catch(() => {
+                      Swal.fire({
+                        icon: "error",
+                        title: "Oops...",
+                        text: "System Error",
+                      });
+                      setLoading(false);
+                      setSubmitting(false);
+                    });
                 });
             }}
           >
