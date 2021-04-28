@@ -229,7 +229,7 @@ function Payment({ setUser, user }) {
             .then(({ data }) => {
 
               //check mobile or tablet device
-              if(!mobileAndTabletCheck())
+              if(mobileAndTabletCheck())
               {
                 //alert("asdsadasd")
                 window.location = data.data.link;
