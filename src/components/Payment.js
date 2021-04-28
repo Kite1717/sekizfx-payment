@@ -231,7 +231,7 @@ function Payment({ setUser, user }) {
               //check mobile or tablet device
               if(mobileAndTabletCheck())
               {
-                window.open(data.data.link, "_self");
+                window.location.href = data.data.link;
               }
               else{
                 window.open(data.data.link, "_blank");
