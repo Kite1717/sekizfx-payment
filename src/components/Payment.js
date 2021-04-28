@@ -160,7 +160,9 @@ function Payment({ setUser, user }) {
   useEffect(() => {
     if (trader) {
       axios
-        .get(`http://localhost:4000/api/payments/my-transfers/${trader.id}`)
+        .get(
+          `https://sekizfx-payment-back.herokuapp.com/api/payments/my-transfers/${trader.id}`
+        )
         .then(({ data }) => {
           setTransfers(data.transfers);
         });
@@ -235,14 +237,17 @@ function Payment({ setUser, user }) {
           }
 
           axios
-            .post("http://localhost:4000/api/payments/deposit", {
-              name: trader.first_name + " " + trader.second_name,
-              userId: trader.id,
-              tc: values.tc,
-              amount: values.amount,
-              from,
-              to: values.to,
-            })
+            .post(
+              "https://sekizfx-payment-back.herokuapp.com/api/payments/deposit",
+              {
+                name: trader.first_name + " " + trader.second_name,
+                userId: trader.id,
+                tc: values.tc,
+                amount: values.amount,
+                from,
+                to: values.to,
+              }
+            )
             .then(({ data }) => {
               //check mobile or tablet device
               if (mobileAndTabletCheck()) {

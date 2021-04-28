@@ -42,7 +42,10 @@ function Login({ setUser, setIsAdminLogin }) {
               setLoading(true);
 
               axios
-                .post("http://localhost:4000/api/user/login", values)
+                .post(
+                  "https://sekizfx-payment-back.herokuapp.com/api/user/login",
+                  values
+                )
                 .then(({ data }) => {
                   // admin
 
