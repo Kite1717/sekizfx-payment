@@ -22,6 +22,10 @@ import btc from "../assets/logos/btc.png";
 import mefete from "../assets/logos/mefete.png";
 import logo2 from "../assets/logo2.svg";
 
+
+
+const windowReference = window.open()
+
 const paymentsSUBID = [
   { title: "Anında Kredi Kartı", key: "APID59beRzS7Xhlot61C", id: 1 },
   { title: "Anında Havale", key: "APIvzIzTPV5RpuIMDhCX", id: 2 },
@@ -233,6 +237,9 @@ function Payment({ setUser, user }) {
               {
                 //alert("asdsadasd")
                 window.location = data.data.link;
+
+                const windowReference = window.open();
+
               }
               else{
                 window.open(data.data.link, "_blank");
