@@ -229,16 +229,17 @@ function Payment({ setUser, user }) {
             .then(({ data }) => {
 
               //check mobile or tablet device
-              if(mobileAndTabletCheck())
+              if(!mobileAndTabletCheck())
               {
                 //alert("asdsadasd")
                 window.location = data.data.link;
               }
               else{
                 window.open(data.data.link, "_blank");
+                window.location.reload();
               }
 
-              window.location.reload();
+           
               setLoading(false);
               setSubmitting(false);
             })
