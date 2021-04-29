@@ -29,12 +29,49 @@ const paymentsSUBID = [
   { title: "Jet Papara", key: "APIu8OqRGyI2ovtuw2oO", id: 3 },
   { title: "Anında Mefete", key: "APIlfMbLjPcJ7Tx3WN8c", id: 4 },
 ];
-function Payment({ setUser, user }) {
+
+const havaleBanks = [
+  { title: "Garanti Bankası", id: 1 },
+  { title: "Akbank", id: 2 },
+  { title: "Denizbank", id: 3 },
+  { title: "Finansbank", id: 4 },
+  { title: "İş Bankası", id: 5 },
+  { title: "Teb", id: 7 },
+  { title: "Vakıfbank", id: 9 },
+  { title: "Yapı Kredi", id: 11 },
+  { title: "Ziraat Bankası", id: 13 },
+  { title: "İng Bank", id: 15 },
+  { title: "Şeker Bank", id: 17 },
+  { title: "KuveytTürk", id: 19 },
+  { title: "Pttbank", id: 23 },
+  { title: "Turkiye Finans", id: 25 },
+  { title: "Halk Bank", id: 27 },
+  { title: "Odea Bank", id: 29 },
+  { title: "Albaraka Türk", id: 30 },
+  { title: "Papara", id: 31 },
+  { title: "Enpara", id: 32 },
+  { title: "Aktifbank", id: 33 },
+];
+
+const krediKartiBanks = [
+  { title: "Garanti Bankası", id: 35 },
+  { title: "Denizbank", id: 36 },
+  { title: "Finansbank", id: 37 },
+  { title: "İş Bankası", id: 38 },
+  { title: "Teb", id: 39 },
+  { title: "Vakıfbank", id: 40 },
+  { title: "Ziraat Bankası", id: 41 },
+  { title: "Yapıkredi", id: 42 },
+  { title: "Halkbank", id: 44 },
+];
+
+function Withdraw({ setUser, user }) {
+  const [banks, setBanks] = useState(krediKartiBanks);
+
   const [loading, setLoading] = useState(false);
   const [exchangeRate, setExchangeRate] = useState(1);
 
   const [accounts, setAccounts] = useState([]);
-  const [showPaymentModal, setShowPaymentModal] = useState(false);
 
   const [from, setFrom] = useState(paymentsSUBID[0]);
   const [paymentImg, setPaymentImg] = useState(kredi);
@@ -199,13 +236,14 @@ function Payment({ setUser, user }) {
   return (
     <Container>
       <img alt="payment-logo" className="center" src={logo2} />
-      <h2>Make a Deposit</h2>
+      <h2>Make a Withdraw</h2>
 
       <Formik
         initialValues={{
           tc: "",
           amount: "",
           to: "",
+          bankId: "",
         }}
         validate={(values) => {
           const errors = {};
@@ -292,15 +330,27 @@ function Payment({ setUser, user }) {
                   if (e.target.value === "1") {
                     setFrom(paymentsSUBID[0]);
                     setPaymentImg(kredi);
+
+                    setBanks(krediKartiBanks);
+                    setFieldValue("bankId", krediKartiBanks[0].id);
                   } else if (e.target.value === "2") {
                     setFrom(paymentsSUBID[1]);
                     setPaymentImg(havale);
+
+                    setBanks(havaleBanks);
+                    setFieldValue("bankId", havaleBanks[0].id);
                   } else if (e.target.value === "3") {
                     setFrom(paymentsSUBID[2]);
                     setPaymentImg(papara);
+
+                    setBanks(null);
+                    setFieldValue("bankId", 1);
                   } else if (e.target.value === "4") {
                     setFrom(paymentsSUBID[3]);
                     setPaymentImg(mefete);
+
+                    setBanks(null);
+                    setFieldValue("bankId", 1);
                   }
                 }}
                 as="select"
@@ -323,6 +373,31 @@ function Payment({ setUser, user }) {
                 </option>
               </Form.Control>
             </Form.Group>
+
+            {banks && (
+              <Form.Group>
+                <Form.Label>Transfer Bank</Form.Label>
+                <Form.Control
+                  onChange={(e)=>{
+
+                    setFieldValue("bankId",e.target.value)
+                  }}
+                  onBlur={handleBlur}
+                  value={values.bankId}
+                  name="to"
+                  as="select"
+                >
+                  {banks.map((item, index) => {
+                    return (
+                      <option key={index} value={item.id}>
+                        {item.title}
+                      </option>
+                    );
+                  })}
+                </Form.Control>
+              </Form.Group>
+            )}
+
             <Form.Group>
               <Form.Label>Transfer To</Form.Label>
               {loading ? (
@@ -454,4 +529,4 @@ function Payment({ setUser, user }) {
   );
 }
 
-export default Payment;
+export default Withdraw;

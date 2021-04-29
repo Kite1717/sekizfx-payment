@@ -4,10 +4,13 @@ import Login from "./components/Login";
 import Payment from "./components/Payment";
 import Menu from "./components/Menu";
 import Panel from "./components/Panel";
+import Withdraw from "./components/Withdraw";
 function App() {
   const [user, setUser] = useState(undefined);
   const [loading, setLoading] = useState(true);
   const [isAdminLogin, setIsAdminLogin] = useState(false);
+
+  const [clientPage, setClientPage] = useState("deposit");
   useEffect(() => {
     if (localStorage.getItem("auth") === null) {
       setUser(null);
@@ -29,8 +32,12 @@ function App() {
       } else {
         return (
           <>
-            <Menu setUser={setUser} user={user} />
-            <Payment setUser={setUser} user={user} />
+            <Menu setClientPage={setClientPage} setUser={setUser} user={user} />
+            {clientPage === "deposit" ? (
+              <Payment setUser={setUser} user={user} />
+            ) : (
+              <Withdraw setUser={setUser} user={user} />
+            )}
           </>
         );
       }
