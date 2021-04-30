@@ -2,7 +2,7 @@
   "name": "sekizfx-payment",
   "version": "0.1.0",
   "private": true,
-  "homepage": ".",
+  "homepage": "https://sekizfx-payment.vercel.app/",
   "start_url": ".",
   "dependencies": {
     "@testing-library/jest-dom": "^5.12.0",
