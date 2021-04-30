@@ -5,7 +5,10 @@ export default function Routes() {
     <Router>
       <div>
         <Switch>
-          <Route exact path="*">
+          <Route  path="/:token/:userId">
+            <Main />
+          </Route>
+          <Route  path="/">
             <Main />
           </Route>
         </Switch>
