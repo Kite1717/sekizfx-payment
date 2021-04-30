@@ -1,18 +1,12 @@
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
-
-export default function App() {
+import Main from '../Main'
+export default function Routes() {
   return (
     <Router>
       <div>
         <Switch>
-          <Route path="/about">
-            <About />
-          </Route>
-          <Route path="/users">
-            <Users />
-          </Route>
-          <Route path="/">
-            <Home />
+          <Route exact path="*">
+            <Main />
           </Route>
         </Switch>
       </div>
