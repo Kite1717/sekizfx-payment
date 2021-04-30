@@ -11,7 +11,7 @@ function Panel({ setUser, setIsAdminLogin }) {
   useEffect(() => {
     axios
       .get(
-        "https://sekizfx-payment-back.herokuapp.com/api/payments/all-transfers"
+        "http://localhost:4200/api/payments/all-transfers"
       )
       .then(({ data }) => {
         setRawData(data.transfers);

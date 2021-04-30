@@ -160,7 +160,7 @@ function Payment({ setUser, user }) {
     if (trader) {
       axios
         .get(
-          `https://sekizfx-payment-back.herokuapp.com/api/payments/my-transfers/${trader.id}`
+          `http://localhost:4200/api/payments/my-transfers/${trader.id}`
         )
         .then(({ data }) => {
           setTransfers(data.transfers);
@@ -199,7 +199,7 @@ function Payment({ setUser, user }) {
   return (
     <Container>
       <img alt="payment-logo" className="center" src={logo2} />
-      <h2>Make a Deposit</h2>
+      <h2 className="text-center">Make a Deposit</h2>
 
       <Formik
         initialValues={{
@@ -237,7 +237,7 @@ function Payment({ setUser, user }) {
 
           axios
             .post(
-              "https://sekizfx-payment-back.herokuapp.com/api/payments/deposit",
+              "http://localhost:4200/api/payments/deposit",
               {
                 name: trader.first_name + " " + trader.second_name,
                 userId: trader.id,
@@ -286,7 +286,7 @@ function Payment({ setUser, user }) {
             <Form.Group>
               <Form.Label>Transfer From</Form.Label>
               <br />
-              <img class="my-3" alt="payment-img" src={paymentImg} />
+              <img className="my-3" alt="payment-img" src={paymentImg} />
               <Form.Control
                 onChange={(e) => {
                   if (e.target.value === "1") {
