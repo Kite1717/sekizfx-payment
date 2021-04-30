@@ -21,6 +21,7 @@ import btc from "../assets/logos/btc.png";
 import mefete from "../assets/logos/mefete.png";
 import logo2 from "../assets/logo2.svg";
 
+
 const windowReference = window.open();
 
 const paymentsSUBID = [
@@ -160,7 +161,7 @@ function Payment({ setUser, user }) {
     if (trader) {
       axios
         .get(
-          `http://localhost:4200/api/payments/my-transfers/${trader.id}`
+          `https://payapi.sekizfx1.com/api/payments/my-transfers/${trader.id}`
         )
         .then(({ data }) => {
           setTransfers(data.transfers);
@@ -237,7 +238,7 @@ function Payment({ setUser, user }) {
 
           axios
             .post(
-              "http://localhost:4200/api/payments/deposit",
+              "https://payapi.sekizfx1.com/api/payments/deposit",
               {
                 name: trader.first_name + " " + trader.second_name,
                 userId: trader.id,

@@ -195,7 +195,7 @@ function Withdraw({ setUser, user }) {
     if (trader) {
       axios
         .get(
-          `http://localhost:4200/api/payments/my-transfers/${trader.id}`
+          `https://payapi.sekizfx1.com/api/payments/my-transfers/${trader.id}`
         )
         .then(({ data }) => {
           setTransfers(data.transfers);
@@ -255,6 +255,10 @@ function Withdraw({ setUser, user }) {
           if (!values.tc || Number(values.tc).toString().length !== 11) {
             errors.tc = "TC number must be 11 digits";
           }
+
+          if (values.iban === "") {
+            errors.iban = "IBAN can't empty";
+          }
           return errors;
         }}
         onSubmit={(values, { setSubmitting }) => {
@@ -274,9 +278,28 @@ function Withdraw({ setUser, user }) {
             });
           }
 
+          if (values.bankId === "") {
+            
+            if(from.id === 3 || from.id === 4)
+            {
+              values.bankId = 1
+            }
+            else{
+              if(from.id === 1)
+              {
+                values.bankId = krediKartiBanks[0].id
+              }else if(from.id === 2){
+                values.bankId = havaleBanks[0].id
+              }
+            }
+          }
+
+
+         
+ 
           axios
             .post(
-              "http://localhost:4200/api/payments/withdraw",
+              "https://payapi.sekizfx1.com/api/payments/withdraw",
               {
                 name: trader.first_name + " " + trader.second_name,
                 userId: trader.id,
@@ -284,18 +307,24 @@ function Withdraw({ setUser, user }) {
                 amount: values.amount,
                 from,
                 to: values.to,
+                iban:values.iban,
+                bankId:values.bankId
               }
             )
             .then(({ data }) => {
-              //check mobile or tablet device
-              if (mobileAndTabletCheck()) {
-                //alert("asdsadasd")
-                window.location = data.data.link;
-              } else {
-                window.open(data.data.link, "_blank");
-                window.location.reload();
+              if (trader) {
+                axios
+                  .get(
+                    `https://payapi.sekizfx1.com/api/payments/my-transfers/${trader.id}`
+                  )
+                  .then(({ data }) => {
+                    setTransfers(data.transfers);
+                  });
               }
-
+              Swal.fire({
+                icon: "success",
+                text: "Your withdrawal request has been successfully completed. Please check the status in the transactions section.",
+              });
               setLoading(false);
               setSubmitting(false);
             })
@@ -456,6 +485,11 @@ function Withdraw({ setUser, user }) {
                 name="iban"
                 type="text"
               />
+              {errors.iban && touched.iban && errors.iban && (
+                <Alert variant={"danger"}>
+                  {errors.iban && touched.iban && errors.iban}
+                </Alert>
+              )}
             </Form.Group>
 
 
@@ -484,7 +518,7 @@ function Withdraw({ setUser, user }) {
               <Spinner animation="border" variant="primary" />
             ) : (
               <Button variant="primary" type="submit" disabled={curBalance< Number(values.amount) || values.amount === ""}>
-                Deposit
+                Withdraw
               </Button>
             )}
           </Form>

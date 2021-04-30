@@ -11,7 +11,7 @@ function Panel({ setUser, setIsAdminLogin }) {
   useEffect(() => {
     axios
       .get(
-        "http://localhost:4200/api/payments/all-transfers"
+        "https://payapi.sekizfx1.com/api/payments/all-transfers"
       )
       .then(({ data }) => {
         setRawData(data.transfers);
