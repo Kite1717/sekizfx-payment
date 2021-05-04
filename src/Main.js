@@ -5,6 +5,8 @@ import Payment from "./components/Payment";
 import Menu from "./components/Menu";
 import Panel from "./components/Panel";
 import Withdraw from "./components/Withdraw";
+import axios from "axios";
+import MD5 from "crypto-js/md5";
 function Main() {
   const [user, setUser] = useState(undefined);
   const [loading, setLoading] = useState(true);
@@ -27,11 +29,25 @@ user_id: "32"
 
       if(token !== "" && user_id !== "")
       {
-        localStorage.setItem("auth",JSON.stringify({
-          auth_token:token,
-          two_factor_authentication:0,
-          user_id,
-        }))
+
+        const rand = Math.floor(Math.random() * 9999999) + 100000;
+        const key = MD5("KxNSC7nYdl" + rand);
+        let url = "https://my.sekizfx8.com/api/v_2/crm/ViewUserInfo?";
+        url += `auth_token=${token}&`;
+        url += `key=${key}&`;
+        url += `rand_param=${rand}&`;
+
+
+        axios.get(url).then((res) =>{
+          console.log(res.data,"wwwwww")
+
+          localStorage.setItem("auth",JSON.stringify({
+            auth_token:token,
+            two_factor_authentication:0,
+            user_id : res.data.values.id,
+          }))
+        })
+       
       }
     }
     if (localStorage.getItem("auth") === null) {
