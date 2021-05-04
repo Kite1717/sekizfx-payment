@@ -45,19 +45,27 @@ user_id: "32"
             two_factor_authentication:0,
             user_id : res.data.values.id,
           }))
+
+          setUser(JSON.parse(localStorage.getItem("auth")));
+        }).catch(()=>{
+          setUser(null);
         })
        
       }
+    }else{
+      if (localStorage.getItem("auth") === null) {
+        setUser(null);
+      } else {
+        setUser(JSON.parse(localStorage.getItem("auth")));
+      }
+      if (localStorage.getItem("auth-admin") !== null) {
+        setIsAdminLogin(true);
+      }
+      
     }
-    if (localStorage.getItem("auth") === null) {
-      setUser(null);
-    } else {
-      setUser(JSON.parse(localStorage.getItem("auth")));
-    }
-    if (localStorage.getItem("auth-admin") !== null) {
-      setIsAdminLogin(true);
-    }
+
     setLoading(false);
+   
   }, []);
 
   const pageRenderer = () => {
