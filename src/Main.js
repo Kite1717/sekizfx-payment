@@ -39,7 +39,6 @@ user_id: "32"
 
 
         axios.get(url).then((res) =>{
-          console.log(res.data,"wwwwww")
 
           localStorage.setItem("auth",JSON.stringify({
             auth_token:token,
