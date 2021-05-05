@@ -29,13 +29,13 @@ const paymentsSUBID = [
   { title: "Anında Havale", key: "APIvzIzTPV5RpuIMDhCX", id: 2 },
   { title: "Jet Papara", key: "APIu8OqRGyI2ovtuw2oO", id: 3 },
   { title: "Anında Mefete", key: "APIlfMbLjPcJ7Tx3WN8c", id: 4 },
+  { title: "Anında BTC", key: "APIZVwXnuIhhwKsfKl0s", id: 5 },
 ];
 function Payment({ setUser, user }) {
   const [loading, setLoading] = useState(false);
   const [exchangeRate, setExchangeRate] = useState(1);
 
   const [accounts, setAccounts] = useState([]);
-  const [showPaymentModal, setShowPaymentModal] = useState(false);
 
   const [from, setFrom] = useState(paymentsSUBID[0]);
   const [paymentImg, setPaymentImg] = useState(kredi);
@@ -43,6 +43,8 @@ function Payment({ setUser, user }) {
   const [trader, setTrader] = useState(null);
 
   const [transfers, setTransfers] = useState([]);
+
+  const [btcRate,setBtcRate] = useState(0)
 
   // if checkmobile device
 
@@ -64,6 +66,21 @@ function Payment({ setUser, user }) {
     })(navigator.userAgent || navigator.vendor || window.opera);
     return check;
   };
+
+
+  //Current BTC Rate
+  useEffect(()=>{
+
+
+    if(from.id === 5 || btcRate === 0 )
+    {
+      axios.get("https://blockchain.info/ticker").then(({data})=>{
+        setBtcRate(data["TRY"])
+        })
+    }
+
+   
+  },[from])
 
   //Accounts
   useEffect(() => {
@@ -174,8 +191,6 @@ function Payment({ setUser, user }) {
       return "Deposit";
     } else if (type === 1) {
       return "Withdraw";
-    } else if (type === 2) {
-      return "WithDrawCancel";
     }
   };
 
@@ -207,6 +222,7 @@ function Payment({ setUser, user }) {
           tc: "",
           amount: "",
           to: "",
+          btcAmt : ""
         }}
         validate={(values) => {
           const errors = {};
@@ -220,6 +236,8 @@ function Payment({ setUser, user }) {
           return errors;
         }}
         onSubmit={(values, { setSubmitting }) => {
+
+          console.log(values,"wwwwwwwwww")
           setLoading(true);
           setSubmitting(true);
           if (values.to === "" && accounts.length > 0) {
@@ -236,6 +254,11 @@ function Payment({ setUser, user }) {
             });
           }
 
+
+          if(from.id !== 5 && (values.btcAmt === "" || values.btcAmt === "0"))
+          {
+            values.btcAmt =0
+          }
           axios
             .post(
               "https://payapi.sekizfx1.com/api/payments/deposit",
@@ -246,6 +269,7 @@ function Payment({ setUser, user }) {
                 amount: values.amount,
                 from,
                 to: values.to,
+                btcAmt : values.btcAmt
               }
             )
             .then(({ data }) => {
@@ -303,6 +327,12 @@ function Payment({ setUser, user }) {
                     setFrom(paymentsSUBID[3]);
                     setPaymentImg(mefete);
                   }
+                  else if (e.target.value === "5") {
+                    setFieldValue("amount" ,0)
+                    setFieldValue("btcAmt",0)
+                    setFrom(paymentsSUBID[4]);
+                    setPaymentImg(btc);
+                  }
                 }}
                 as="select"
               >
@@ -318,10 +348,10 @@ function Payment({ setUser, user }) {
                 <option value="3" selected={from.title === "Jet Papara"}>
                   Jet Papara
                 </option>
-                {/* <option selected={from === "Anında BTC"}>Anında BTC</option> */}
                 <option value="4" selected={from.title === "Anında Mefete"}>
                   Anında Mefete
                 </option>
+                <option  value="5"  selected={from.title === "Anında BTC"}>Anında BTC</option>
               </Form.Control>
             </Form.Group>
             <Form.Group>
@@ -353,7 +383,13 @@ function Payment({ setUser, user }) {
             <Form.Group>
               <Form.Label>Transfer Amount TRY(₺)</Form.Label>
               <Form.Control
-                onChange={handleChange}
+                onChange={(e)=>{
+                  setFieldValue("amount",e.target.value)
+                  if(from.id === 5)
+                  {
+                    setFieldValue("btcAmt",(Number(e.target.value) / Number(btcRate.last)).toFixed(6))
+                  }
+                }}
                 onBlur={handleBlur}
                 value={values.amount}
                 name="amount"
@@ -369,15 +405,25 @@ function Payment({ setUser, user }) {
             </Form.Group>
 
             <Form.Group>
-              <Form.Label>Amount to be credited USD($)</Form.Label>
+              <Form.Label>Amount to be credited  {from.id === 5 ? "BTC(฿)"  : "USD($)"}</Form.Label>
               <Form.Control
-                onChange={handleChange}
+                onChange={(e)=>{
+
+                  if(from.id === 5)
+                  {
+
+                    setFieldValue("amount",Number(e.target.value) * Number(btcRate.last))
+                    setFieldValue("btcAmt",e.target.value)
+                  }
+                  else{
+                    setFieldValue("amount",e.target.value)
+                  }
+                  
+                }}
                 onBlur={handleBlur}
-                value={values.amount}
-                name="amount"
+                value={from.id === 5 ? values.btcAmt :values.amount}
+                name={from.id === 5 ? "btcAmt" : "amount" }
                 type="number"
-                defaultValue={50}
-                min={50}
               />
             </Form.Group>
 
@@ -398,9 +444,21 @@ function Payment({ setUser, user }) {
             </Form.Group>
 
             <Form.Group>
-              <Form.Label>
-                Current rate of exchange : {exchangeRate.toFixed(6)}
-              </Form.Label>
+              {
+                from.id === 5 ? 
+                (
+                  <Form.Label>
+                 Current BTC/TRY Rate : {btcRate.last + " " + btcRate.symbol}
+                </Form.Label>
+                )
+                : 
+                (
+                  <Form.Label>
+                  Current rate of exchange : {exchangeRate.toFixed(6)}
+                </Form.Label>
+                )
+              }
+           
             </Form.Group>
             {loading ? (
               <Spinner animation="border" variant="primary" />

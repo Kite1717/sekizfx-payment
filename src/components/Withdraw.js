@@ -208,8 +208,6 @@ function Withdraw({ setUser, user }) {
       return "Deposit";
     } else if (type === 1) {
       return "Withdraw";
-    } else if (type === 2) {
-      return "WithDrawCancel";
     }
   };
 

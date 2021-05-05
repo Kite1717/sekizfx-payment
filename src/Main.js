@@ -21,7 +21,7 @@ two_factor_authentication: 0
 user_id: "32"
     */
     // redirect link
-    if(window.location.pathname.length > 0)
+    if(window.location.pathname !== "/")
     {
       const pieces = window.location.pathname.substring(1).split("/")
       const token = pieces[0]
