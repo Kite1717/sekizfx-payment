@@ -22,7 +22,6 @@ import mefete from "../assets/logos/mefete.png";
 import logo2 from "../assets/logo2.svg";
 
 
-const windowReference = window.open();
 
 const paymentsSUBID = [
   { title: "Anında Kredi Kartı", key: "APID59beRzS7Xhlot61C", id: 1 },

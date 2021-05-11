@@ -11,7 +11,7 @@ function AdminMenu({ setUser, setIsAdminLogin, setType }) {
   return (
     <Navbar bg="light" expand="lg">
       <Navbar.Brand href="#">
-        <img src={logo2} />
+        <img alt = "logo2" src={logo2} />
       </Navbar.Brand>
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav">
