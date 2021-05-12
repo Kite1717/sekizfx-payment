@@ -20,6 +20,7 @@ function AdminMenu({ setUser, setIsAdminLogin, setType }) {
           <Nav.Link onClick={() => setType(0)}>Deposits</Nav.Link>
           <Nav.Link onClick={() => setType(1)}>Withdraws</Nav.Link>
           <Nav.Link onClick={() => setType(2)}>Withdraw Cancels</Nav.Link>
+          <Nav.Link onClick={() => setType(3)}>Settings</Nav.Link>
           <Nav.Link onClick={logOut}>Exit</Nav.Link>
         </Nav>
       </Navbar.Collapse>

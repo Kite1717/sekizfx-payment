@@ -31,6 +31,8 @@ const paymentsSUBID = [
   { title: "Anında BTC", key: "APIZVwXnuIhhwKsfKl0s", id: 5 },
 ];
 function Payment({ setUser, user }) {
+
+  const [depositStatus,setDepositStatus] = useState(false)
   const [loading, setLoading] = useState(false);
   const [exchangeRate, setExchangeRate] = useState(1);
 
@@ -67,6 +69,24 @@ function Payment({ setUser, user }) {
   };
 
 
+
+  //get deposit system status
+
+  useEffect(() => {
+  
+
+   axios.get("https://payapi.sekizfx1.com/api/user/setting/deposit").then((res)=>{
+
+   setDepositStatus(res.data.setting.status)
+   }).catch(()=>{
+
+    Swal.fire({
+      icon: "error",
+      title: "Oops...",
+      text: "Something went wrong",
+    })
+   })
+  }, [])
   //Current BTC Rate
   useEffect(()=>{
 
@@ -235,8 +255,6 @@ function Payment({ setUser, user }) {
           return errors;
         }}
         onSubmit={(values, { setSubmitting }) => {
-
-          console.log(values,"wwwwwwwwww")
           setLoading(true);
           setSubmitting(true);
           if (values.to === "" && accounts.length > 0) {
@@ -462,7 +480,7 @@ function Payment({ setUser, user }) {
             {loading ? (
               <Spinner animation="border" variant="primary" />
             ) : (
-              <Button variant="primary" type="submit" disabled={isSubmitting}>
+              <Button variant="primary" type="submit" disabled={isSubmitting || !depositStatus}>
                 Deposit
               </Button>
             )}

@@ -83,6 +83,24 @@ function Withdraw({ setUser, user }) {
   const [curBalance,setCurBalance] = useState(0)
 
 
+  const [withdrawStatus,setWithdrawStatus] = useState(false)
+  //get with draw system status
+
+  useEffect(() => {
+  
+
+    axios.get("https://payapi.sekizfx1.com/api/user/setting/withdraw").then((res)=>{
+ 
+    setWithdrawStatus(res.data.setting.status)
+    }).catch(()=>{
+ 
+     Swal.fire({
+       icon: "error",
+       title: "Oops...",
+       text: "Something went wrong",
+     })
+    })
+   }, [])
 
   //Accounts
   useEffect(() => {
@@ -290,7 +308,7 @@ function Withdraw({ setUser, user }) {
             iban:values.iban,
             bankId:values.bankId
           }) */
-         
+          
  
           axios
             .post(
@@ -523,7 +541,7 @@ function Withdraw({ setUser, user }) {
             {loading ? (
               <Spinner animation="border" variant="primary" />
             ) : (
-              <Button variant="primary" type="submit" disabled={curBalance< Number(values.amount) || values.amount === ""}>
+              <Button variant="primary" type="submit" disabled={curBalance< Number(values.amount) || values.amount === "" || !withdrawStatus}>
                 Withdraw
               </Button>
             )}
