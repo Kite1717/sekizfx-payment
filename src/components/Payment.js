@@ -24,11 +24,11 @@ import logo2 from "../assets/logo2.svg";
 
 
 const paymentsSUBID = [
-  { title: "Anında Kredi Kartı", key: "APID59beRzS7Xhlot61C", id: 1 },
-  { title: "Anında Havale", key: "APIvzIzTPV5RpuIMDhCX", id: 2 },
-  { title: "Jet Papara", key: "APIu8OqRGyI2ovtuw2oO", id: 3 },
-  { title: "Anında Mefete", key: "APIlfMbLjPcJ7Tx3WN8c", id: 4 },
-  { title: "Anında BTC", key: "APIZVwXnuIhhwKsfKl0s", id: 5 },
+  { title: "Anında Kredi Kartı",  id: 1 },
+  { title: "Anında Havale",  id: 2 },
+  { title: "Jet Papara", id: 3 },
+  { title: "Anında Mefete",  id: 4 },
+  { title: "Anında BTC",  id: 5 },
 ];
 function Payment({ setUser, user }) {
 
@@ -75,7 +75,7 @@ function Payment({ setUser, user }) {
   useEffect(() => {
   
 
-   axios.get("https://payapi.sekizfx1.com/api/user/setting/deposit").then((res)=>{
+   axios.get("http://localhost:4200/api/user/setting/deposit").then((res)=>{
 
    setDepositStatus(res.data.setting.status)
    }).catch(()=>{
@@ -100,6 +100,20 @@ function Payment({ setUser, user }) {
 
    
   },[from])
+
+
+  const systemControl = () =>{
+
+    axios.get("http://localhost:4200/api/user/setting/deposit").then((res)=>{
+      return res.data.setting.status
+  
+      }).catch(()=>{
+   
+       return false;
+      })
+
+     
+  }
 
   //Accounts
   useEffect(() => {
@@ -197,7 +211,7 @@ function Payment({ setUser, user }) {
     if (trader) {
       axios
         .get(
-          `https://payapi.sekizfx1.com/api/payments/my-transfers/${trader.id}`
+          `http://localhost:4200/api/payments/my-transfers/${trader.id}`
         )
         .then(({ data }) => {
           setTransfers(data.transfers);
@@ -255,62 +269,75 @@ function Payment({ setUser, user }) {
           return errors;
         }}
         onSubmit={(values, { setSubmitting }) => {
-          setLoading(true);
-          setSubmitting(true);
-          if (values.to === "" && accounts.length > 0) {
-            values.to = accounts[0].server_account;
-          } else if (accounts.length === 0) {
-            Swal.fire({
-              icon: "error",
-              title: "Oops...",
-              text: "You don't have account",
-            }).then(() => {
-              setUser(null);
-              setLoading(false);
-              setSubmitting(false);
-            });
-          }
 
-
-          if(from.id !== 5 && (values.btcAmt === "" || values.btcAmt === "0"))
+          if(systemControl())
           {
-            values.btcAmt =0
-          }
-          axios
-            .post(
-              "https://payapi.sekizfx1.com/api/payments/deposit",
-              {
-                name: trader.first_name + " " + trader.second_name,
-                userId: trader.id,
-                tc: values.tc,
-                amount: values.amount,
-                from,
-                to: values.to,
-                btcAmt : values.btcAmt
-              }
-            )
-            .then(({ data }) => {
-              //check mobile or tablet device
-              if (mobileAndTabletCheck()) {
-                //alert("asdsadasd")
-                window.location = data.data.link;
-              } else {
-                window.open(data.data.link, "_blank");
-                window.location.reload();
-              }
 
-              setLoading(false);
-              setSubmitting(false);
-            })
-            .catch((err) => {
+            setLoading(true);
+            setSubmitting(true);
+            if (values.to === "" && accounts.length > 0) {
+              values.to = accounts[0].server_account;
+            } else if (accounts.length === 0) {
               Swal.fire({
                 icon: "error",
                 title: "Oops...",
-                text: "Payment system busy please try again later",
+                text: "You don't have account",
+              }).then(() => {
+                setUser(null);
+                setLoading(false);
+                setSubmitting(false);
               });
-              setLoading(false);
-              setSubmitting(false);
+            }
+  
+  
+            if(from.id !== 5 && (values.btcAmt === "" || values.btcAmt === "0"))
+            {
+              values.btcAmt =0
+            }
+            axios
+              .post(
+                "http://localhost:4200/api/payments/deposit",
+                {
+                  name: trader.first_name + " " + trader.second_name,
+                  userId: trader.id,
+                  tc: values.tc,
+                  amount: values.amount,
+                  from,
+                  to: values.to,
+                  btcAmt : values.btcAmt
+                }
+              )
+              .then(({ data }) => {
+                //check mobile or tablet device
+                if (mobileAndTabletCheck()) {
+                  //alert("asdsadasd")
+                  window.location = data.data.link;
+                } else {
+                  window.open(data.data.link, "_blank");
+                  window.location.reload();
+                }
+  
+                setLoading(false);
+                setSubmitting(false);
+              })
+              .catch((err) => {
+                Swal.fire({
+                  icon: "error",
+                  title: "Oops...",
+                  text: "Payment system busy please try again later",
+                });
+                setLoading(false);
+                setSubmitting(false);
+              });
+          }
+          else{
+            Swal.fire({
+              icon: "error",
+              title: "Oops...",
+              text: "Payment system busy please try again later",
             });
+          }
+       
         }}
       >
         {({
