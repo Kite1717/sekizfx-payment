@@ -4,6 +4,8 @@ import Settings from "./Settings";
 import { Table } from "react-bootstrap";
 import moment from "moment";
 import axios from "axios";
+import WithdrawRequest from "./WithdrawRequest";
+
 
 function Panel({ setUser, setIsAdminLogin }) {
   const [rawData, setRawData] = useState([]);
@@ -11,7 +13,7 @@ function Panel({ setUser, setIsAdminLogin }) {
   const [type, setType] = useState(-1);
   useEffect(() => {
     axios
-      .get("http://localhost:4200/api/payments/all-transfers")
+      .get("https://payapi.sekizfx1.com/api/payments/all-transfers")
       .then(({ data }) => {
         setRawData(data.transfers);
         setTransfers(data.transfers);
@@ -70,6 +72,65 @@ function Panel({ setUser, setIsAdminLogin }) {
       return "Settings";
     }
   };
+
+  const renderFunction = () =>{
+
+    if(type === 3)
+    {
+      return(
+        <Settings />
+      )
+    }
+    else if(type === 4)
+    {
+      return <WithdrawRequest/>
+    }
+    else{
+
+      return(
+        <Table striped bordered hover responsive>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Date</th>
+            <th>Where From</th>
+            <th>Where To</th>
+            <th>Type</th>
+            <th>Amount</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {transfers.map((item, index) => {
+            return (
+              <tr key={index}>
+                <td>{item.id}</td>
+
+                <td>
+                  {moment(item.createdAt).format("DD.MM.YYYY, HH:mm:ss")}
+                </td>
+                <td>{item.from}</td>
+                <td>{item.to}</td>
+                <td>{getType(item.type)}</td>
+                <td>{item.amount} USD</td>
+                <td
+                  style={{
+                    fontSize: "1.3rem",
+                    fontWeight: "bold",
+                    color: getStatusColor(item.status),
+                  }}
+                >
+                  {getStatus(item.status)}
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </Table>
+      )
+    }
+
+  }
   return (
     <>
       <AdminMenu
@@ -78,52 +139,7 @@ function Panel({ setUser, setIsAdminLogin }) {
         setIsAdminLogin={setIsAdminLogin}
       />
       <h4 className="mt-5">{getTitle()}</h4>
-      {type !== 3 ? (
-        <>
-       
-          <Table striped bordered hover responsive>
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Date</th>
-                <th>Where From</th>
-                <th>Where To</th>
-                <th>Type</th>
-                <th>Amount</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {transfers.map((item, index) => {
-                return (
-                  <tr key={index}>
-                    <td>{item.id}</td>
-
-                    <td>
-                      {moment(item.createdAt).format("DD.MM.YYYY, h:mm:ss")}
-                    </td>
-                    <td>{item.from}</td>
-                    <td>{item.to}</td>
-                    <td>{getType(item.type)}</td>
-                    <td>{item.amount} USD</td>
-                    <td
-                      style={{
-                        fontSize: "1.3rem",
-                        fontWeight: "bold",
-                        color: getStatusColor(item.status),
-                      }}
-                    >
-                      {getStatus(item.status)}
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </Table>
-        </>
-      ) : (
-        <Settings />
-      )}
+      {renderFunction()}
     </>
   );
 }

@@ -89,7 +89,7 @@ function Withdraw({ setUser, user }) {
   useEffect(() => {
   
 
-    axios.get("http://localhost:4200/api/user/setting/withdraw").then((res)=>{
+    axios.get("https://payapi.sekizfx1.com/api/user/setting/withdraw").then((res)=>{
  
     setWithdrawStatus(res.data.setting.status)
     }).catch(()=>{
@@ -199,7 +199,7 @@ function Withdraw({ setUser, user }) {
     if (trader) {
       axios
         .get(
-          `http://localhost:4200/api/payments/my-transfers/${trader.id}`
+          `https://payapi.sekizfx1.com/api/payments/my-transfers/${trader.id}`
         )
         .then(({ data }) => {
           setTransfers(data.transfers);
@@ -235,19 +235,11 @@ function Withdraw({ setUser, user }) {
   };
 
 
-  const systemControl = () =>{
+  const systemControl = async () =>{
 
-    axios.get("http://localhost:4200/api/user/setting/withdraw").then((res)=>{
-      return res.data.setting.status
-  
-      }).catch(()=>{
-   
-       return false;
-      })
+    return await axios.get("https://payapi.sekizfx1.com/api/user/setting/withdraw");
 
-     
   }
-
   const balanceControl = (to,amount) =>{
 
     const acc = accounts.find((item) => item.server_account ===   to )
@@ -295,10 +287,10 @@ function Withdraw({ setUser, user }) {
           }
           return errors;
         }}
-        onSubmit={(values, { setSubmitting }) => {
+        onSubmit={async (values, { setSubmitting }) => {
 
-
-          if(systemControl())
+          const {data} = await systemControl();
+          if(data.setting.status)
           {
             
             setLoading(true);
@@ -337,7 +329,7 @@ function Withdraw({ setUser, user }) {
              {
               axios
               .post(
-                "http://localhost:4200/api/payments/withdraw",
+                "https://payapi.sekizfx1.com/api/payments/wd-request",
                 {
                   name: trader.first_name + " " + trader.second_name,
                   userId: trader.id,
@@ -354,7 +346,7 @@ function Withdraw({ setUser, user }) {
                 if (trader) {
                   axios
                     .get(
-                      `http://localhost:4200/api/payments/my-transfers/${trader.id}`
+                      `https://payapi.sekizfx1.com/api/payments/my-transfers/${trader.id}`
                     )
                     .then(({ data }) => {
                       setTransfers(data.transfers);
@@ -389,7 +381,6 @@ function Withdraw({ setUser, user }) {
              }
           }
           else{
-            balanceControl(values.to)
             Swal.fire({
               icon: "error",
               title: "Oops...",
@@ -617,7 +608,7 @@ function Withdraw({ setUser, user }) {
               <tr key={index}>
                 <td>{item.id}</td>
 
-                <td>{moment(item.createdAt).format("DD.MM.YYYY, h:mm:ss")}</td>
+                <td>{moment(item.createdAt).format("DD.MM.YYYY, HH:mm:ss")}</td>
                 <td>{item.from}</td>
                 <td>{item.to}</td>
                 <td>{getType(item.type)}</td>

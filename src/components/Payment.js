@@ -75,7 +75,7 @@ function Payment({ setUser, user }) {
   useEffect(() => {
   
 
-   axios.get("http://localhost:4200/api/user/setting/deposit").then((res)=>{
+   axios.get("https://payapi.sekizfx1.com/api/user/setting/deposit").then((res)=>{
 
    setDepositStatus(res.data.setting.status)
    }).catch(()=>{
@@ -102,17 +102,10 @@ function Payment({ setUser, user }) {
   },[from])
 
 
-  const systemControl = () =>{
+  const systemControl = async () =>{
 
-    axios.get("http://localhost:4200/api/user/setting/deposit").then((res)=>{
-      return res.data.setting.status
-  
-      }).catch(()=>{
-   
-       return false;
-      })
+    return await axios.get("https://payapi.sekizfx1.com/api/user/setting/deposit");
 
-     
   }
 
   //Accounts
@@ -211,7 +204,7 @@ function Payment({ setUser, user }) {
     if (trader) {
       axios
         .get(
-          `http://localhost:4200/api/payments/my-transfers/${trader.id}`
+          `https://payapi.sekizfx1.com/api/payments/my-transfers/${trader.id}`
         )
         .then(({ data }) => {
           setTransfers(data.transfers);
@@ -268,9 +261,10 @@ function Payment({ setUser, user }) {
           }
           return errors;
         }}
-        onSubmit={(values, { setSubmitting }) => {
+        onSubmit={async (values, { setSubmitting }) => {
 
-          if(systemControl())
+          const {data} = await systemControl();
+          if(data.setting.status)
           {
 
             setLoading(true);
@@ -296,7 +290,7 @@ function Payment({ setUser, user }) {
             }
             axios
               .post(
-                "http://localhost:4200/api/payments/deposit",
+                "https://payapi.sekizfx1.com/api/payments/deposit",
                 {
                   name: trader.first_name + " " + trader.second_name,
                   userId: trader.id,
@@ -534,7 +528,7 @@ function Payment({ setUser, user }) {
               <tr key={index}>
                 <td>{item.id}</td>
 
-                <td>{moment(item.createdAt).format("DD.MM.YYYY, h:mm:ss")}</td>
+                <td>{moment(item.createdAt).format("DD.MM.YYYY, HH:mm:ss")}</td>
                 <td>{item.from}</td>
                 <td>{item.to}</td>
                 <td>{getType(item.type)}</td>
