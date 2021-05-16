@@ -112,7 +112,7 @@ function Panel({ setUser, setIsAdminLogin }) {
                 <td>{item.from}</td>
                 <td>{item.to}</td>
                 <td>{getType(item.type)}</td>
-                <td>{item.amount} USD</td>
+                <td>{item.amount} TRY</td>
                 <td
                   style={{
                     fontSize: "1.3rem",

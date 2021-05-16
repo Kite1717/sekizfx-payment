@@ -303,7 +303,7 @@ export default function WithdrawRequest() {
                 <td>{item.from}</td>
                 <td>{item.to}</td>
                 <td style={{ fontWeight: "bold", fontSize: "1.3rem" }}>
-                  {item.amount} USD
+                  {item.amount} TRY
                 </td>
                 <th>{item.userId}</th>
                 <th>{item.name}</th>
