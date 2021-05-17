@@ -27,7 +27,7 @@ function Settings() {
      
 
     const email = JSON.parse(localStorage.getItem("auth-admin")).user.email
-   axios.post("https://payapi.sekizfx1.com/api/user/auth-sign",{email,}).then((res)=>{
+   axios.post("http://localhost:4200/api/user/auth-sign",{email,}).then((res)=>{
        
   /* if(res.data.authSign === true)
    {
@@ -55,7 +55,7 @@ function Settings() {
   const getSettings = ()=>{
       setLoading(true)
     axios
-    .get("https://payapi.sekizfx1.com/api/user/setting/all")
+    .get("http://localhost:4200/api/user/setting/all")
     .then(({ data }) => {
       let { settings } = data;
 
@@ -98,7 +98,7 @@ function Settings() {
         
     }
 
-    axios.put("https://payapi.sekizfx1.com/api/user/setting/update",body).then(()=>{
+    axios.put("http://localhost:4200/api/user/setting/update",body).then(()=>{
 
     if(body.name ==="deposit")
     {

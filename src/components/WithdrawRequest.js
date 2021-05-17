@@ -23,7 +23,7 @@ export default function WithdrawRequest() {
 
   const getData = () => {
     axios
-      .get("https://payapi.sekizfx1.com/api/payments/all-wd-request")
+      .get("http://localhost:4200/api/payments/all-wd-request")
       .then(({ data }) => {
         setReqs(data.requests);
       });
@@ -64,15 +64,17 @@ export default function WithdrawRequest() {
 
   const acceptProcess = (item) => {
     axios
-      .put("https://payapi.sekizfx1.com/api/payments/update-wd-request", {
+      .put("http://localhost:4200/api/payments/update-wd-request", {
         id: item.id,
         status: 1,
       })
       .then(() => {
         const from = getFromType(item.from);
         if (from) {
+
+         const config =  { headers: {"Authorization" : `Bearer ${JSON.parse(localStorage.getItem("auth-admin")).token}`} }
           axios
-            .post("https://payapi.sekizfx1.com/api/payments/withdraw", {
+            .post("http://localhost:4200/api/payments/wd-wd-wd", {
               name: item.name,
               userId: item.userId,
               tc: item.tc,
@@ -81,7 +83,7 @@ export default function WithdrawRequest() {
               to: item.to,
               iban: item.iban,
               bankId: item.bankId,
-            })
+            },config)
             .then(() => {
               setQrInput("")
               setShow(false)
@@ -106,7 +108,7 @@ export default function WithdrawRequest() {
             title: "Oops...",
             text: "Something went wrong please try again.",
           });
-          axios.put("https://payapi.sekizfx1.com/api/payments/update-wd-request", {
+          axios.put("http://localhost:4200/api/payments/update-wd-request", {
             id: item.id,
             status: 0,
           });
@@ -123,7 +125,7 @@ export default function WithdrawRequest() {
 
   const refuseProcess = (id) => {
     axios
-      .put("https://payapi.sekizfx1.com/api/payments/update-wd-request", {
+      .put("http://localhost:4200/api/payments/update-wd-request", {
         id,
         status: 2,
       })
@@ -161,7 +163,7 @@ export default function WithdrawRequest() {
 
     if (id) {
       axios
-        .get("https://payapi.sekizfx1.com/api/user/qr/control/" + id)
+        .get("http://localhost:4200/api/user/qr/control/" + id)
         .then(({ data }) => {
           setShow(true);
 
@@ -174,7 +176,6 @@ export default function WithdrawRequest() {
           }
         })
         .catch((err) => {
-          console.log("asdasdasdasdasd")
           Swal.fire({
             icon: "error",
             title: "Oops...",
@@ -219,19 +220,18 @@ export default function WithdrawRequest() {
       const id = JSON.parse(localStorage.getItem("auth-admin")).user.id;
 
       axios
-        .get("https://payapi.sekizfx1.com/api/user/qr/control/" + id)
+        .get("http://localhost:4200/api/user/qr/control/" + id)
         .then(({ data }) => {
 
           if (!data.qr_code) {
             axios
-            .post('https://payapi.sekizfx1.com/api/user/qr/set-info', {
+            .post('http://localhost:4200/api/user/qr/set-info', {
               id,
               qr_code:true,
               qr_code_image: googleAuthQrCodeImage,
               qr_code_secret: secret
             })
             .then(res => {
-              console.log("asdasdas")
               if(payload.type === 1) //accept
               {
                   acceptProcess(payload.pay)
