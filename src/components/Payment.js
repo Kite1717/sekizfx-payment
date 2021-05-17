@@ -75,7 +75,7 @@ function Payment({ setUser, user }) {
   useEffect(() => {
   
 
-   axios.get("http://localhost:4200/api/user/setting/deposit").then((res)=>{
+   axios.get("https://payapi.sekizfx1.com/api/user/setting/deposit").then((res)=>{
 
    setDepositStatus(res.data.setting.status)
    }).catch(()=>{
@@ -104,7 +104,7 @@ function Payment({ setUser, user }) {
 
   const systemControl = async () =>{
 
-    return await axios.get("http://localhost:4200/api/user/setting/deposit");
+    return await axios.get("https://payapi.sekizfx1.com/api/user/setting/deposit");
 
   }
 
@@ -204,7 +204,7 @@ function Payment({ setUser, user }) {
     if (trader) {
       axios
         .get(
-          `http://localhost:4200/api/payments/my-transfers/${trader.id}`
+          `https://payapi.sekizfx1.com/api/payments/my-transfers/${trader.id}`
         )
         .then(({ data }) => {
           setTransfers(data.transfers);
@@ -290,7 +290,7 @@ function Payment({ setUser, user }) {
             }
             axios
               .post(
-                "http://localhost:4200/api/payments/deposit",
+                "https://payapi.sekizfx1.com/api/payments/deposit",
                 {
                   name: trader.first_name + " " + trader.second_name,
                   userId: trader.id,

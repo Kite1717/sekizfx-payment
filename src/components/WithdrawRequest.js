@@ -23,7 +23,7 @@ export default function WithdrawRequest() {
 
   const getData = () => {
     axios
-      .get("http://localhost:4200/api/payments/all-wd-request")
+      .get("https://payapi.sekizfx1.com/api/payments/all-wd-request")
       .then(({ data }) => {
         setReqs(data.requests);
       });
@@ -64,17 +64,17 @@ export default function WithdrawRequest() {
 
   const acceptProcess = (item) => {
     axios
-      .put("http://localhost:4200/api/payments/update-wd-request", {
+      .put("https://payapi.sekizfx1.com/api/payments/update-wd-request", {
         id: item.id,
         status: 1,
       })
       .then(() => {
         const from = getFromType(item.from);
         if (from) {
-
+          
          const config =  { headers: {"Authorization" : `Bearer ${JSON.parse(localStorage.getItem("auth-admin")).token}`} }
           axios
-            .post("http://localhost:4200/api/payments/wd-wd-wd", {
+            .post("https://payapi.sekizfx1.com/api/payments/wd-wd-wd", {
               name: item.name,
               userId: item.userId,
               tc: item.tc,
@@ -108,7 +108,7 @@ export default function WithdrawRequest() {
             title: "Oops...",
             text: "Something went wrong please try again.",
           });
-          axios.put("http://localhost:4200/api/payments/update-wd-request", {
+          axios.put("https://payapi.sekizfx1.com/api/payments/update-wd-request", {
             id: item.id,
             status: 0,
           });
@@ -125,7 +125,7 @@ export default function WithdrawRequest() {
 
   const refuseProcess = (id) => {
     axios
-      .put("http://localhost:4200/api/payments/update-wd-request", {
+      .put("https://payapi.sekizfx1.com/api/payments/update-wd-request", {
         id,
         status: 2,
       })
@@ -163,7 +163,7 @@ export default function WithdrawRequest() {
 
     if (id) {
       axios
-        .get("http://localhost:4200/api/user/qr/control/" + id)
+        .get("https://payapi.sekizfx1.com/api/user/qr/control/" + id)
         .then(({ data }) => {
           setShow(true);
 
@@ -220,12 +220,12 @@ export default function WithdrawRequest() {
       const id = JSON.parse(localStorage.getItem("auth-admin")).user.id;
 
       axios
-        .get("http://localhost:4200/api/user/qr/control/" + id)
+        .get("https://payapi.sekizfx1.com/api/user/qr/control/" + id)
         .then(({ data }) => {
 
           if (!data.qr_code) {
             axios
-            .post('http://localhost:4200/api/user/qr/set-info', {
+            .post('https://payapi.sekizfx1.com/api/user/qr/set-info', {
               id,
               qr_code:true,
               qr_code_image: googleAuthQrCodeImage,

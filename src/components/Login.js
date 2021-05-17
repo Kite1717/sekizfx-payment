@@ -43,7 +43,7 @@ function Login({ setUser, setIsAdminLogin }) {
 
               axios
                 .post(
-                  "http://localhost:4200/api/user/login",
+                  "https://payapi.sekizfx1.com/api/user/login",
                   values
                 )
                 .then(({ data }) => {

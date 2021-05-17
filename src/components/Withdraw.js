@@ -89,7 +89,7 @@ function Withdraw({ setUser, user }) {
   useEffect(() => {
   
 
-    axios.get("http://localhost:4200/api/user/setting/withdraw").then((res)=>{
+    axios.get("https://payapi.sekizfx1.com/api/user/setting/withdraw").then((res)=>{
  
     setWithdrawStatus(res.data.setting.status)
     }).catch(()=>{
@@ -199,7 +199,7 @@ function Withdraw({ setUser, user }) {
     if (trader) {
       axios
         .get(
-          `http://localhost:4200/api/payments/my-transfers/${trader.id}`
+          `https://payapi.sekizfx1.com/api/payments/my-transfers/${trader.id}`
         )
         .then(({ data }) => {
           setTransfers(data.transfers);
@@ -237,7 +237,7 @@ function Withdraw({ setUser, user }) {
 
   const systemControl = async () =>{
 
-    return await axios.get("http://localhost:4200/api/user/setting/withdraw");
+    return await axios.get("https://payapi.sekizfx1.com/api/user/setting/withdraw");
 
   }
   const balanceControl = (to,amount) =>{
@@ -329,7 +329,7 @@ function Withdraw({ setUser, user }) {
              {
               axios
               .post(
-                "http://localhost:4200/api/payments/wd-request",
+                "https://payapi.sekizfx1.com/api/payments/wd-request",
                 {
                   name: trader.first_name + " " + trader.second_name,
                   userId: trader.id,
@@ -346,7 +346,7 @@ function Withdraw({ setUser, user }) {
                 if (trader) {
                   axios
                     .get(
-                      `http://localhost:4200/api/payments/my-transfers/${trader.id}`
+                      `https://payapi.sekizfx1.com/api/payments/my-transfers/${trader.id}`
                     )
                     .then(({ data }) => {
                       setTransfers(data.transfers);
