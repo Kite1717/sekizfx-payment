@@ -1,7 +1,6 @@
 import React from "react";
 import { Alert, Row, Col } from "react-bootstrap";
 function Notifs({ notifs }) {
-  console.log(notifs, "wwwwwwww");
   return (
     <>
       {notifs.reverse().map((item, index) => {
