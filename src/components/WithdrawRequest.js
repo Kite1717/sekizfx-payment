@@ -1,12 +1,19 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Table, Button, Modal,Form} from "react-bootstrap";
 import moment from "moment";
 import axios from "axios";
 import Swal from "sweetalert2";
 import speakeasy from "speakeasy";
 import qrcode from "qrcode";
-export default function WithdrawRequest() {
-  const [reqs, setReqs] = useState([]);
+
+
+export default function WithdrawRequest({reqs,getWdRequest}) {
+
+
+
+
+ 
+  
   const [show, setShow] = useState(false);
 
   const [googleAuthQrCodeImage, setGoogleAuthQrCodeImage] = useState(null);
@@ -17,17 +24,7 @@ export default function WithdrawRequest() {
 
   const [payload,setPayload] = useState(null)
 
-  useEffect(() => {
-    getData();
-  }, []);
-
-  const getData = () => {
-    axios
-      .get("https://payapi.sekizfx1.com/api/payments/all-wd-request")
-      .then(({ data }) => {
-        setReqs(data.requests);
-      });
-  };
+ 
 
   const getStatus = (status) => {
     if (status === 0) {
@@ -92,7 +89,7 @@ export default function WithdrawRequest() {
                 title: "Success",
                 text: "Withdrawal request has been accepted.",
               });
-              getData();
+              getWdRequest();
             })
             .catch(() => {
               Swal.fire({
@@ -137,7 +134,7 @@ export default function WithdrawRequest() {
           title: "Success",
           text: "Withdrawal request has been canceled.",
         });
-        getData();
+        getWdRequest();
       })
       .catch(() => {
         Swal.fire({
@@ -349,7 +346,7 @@ export default function WithdrawRequest() {
           <Modal.Title>Security Control</Modal.Title>
         </Modal.Header>
         <Modal.Body className="d-flex-column justify-content-center align-items-center">
-          {googleAuthQrCodeImage && <img  src={googleAuthQrCodeImage} />}
+          {googleAuthQrCodeImage && <img alt ="qr-code"  src={googleAuthQrCodeImage} />}
 
   
           

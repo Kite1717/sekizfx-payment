@@ -1,16 +1,95 @@
 import React, { useEffect, useState } from "react";
 import AdminMenu from "./AdminMenu";
 import Settings from "./Settings";
-import { Table } from "react-bootstrap";
+import {  Table } from "react-bootstrap";
 import moment from "moment";
 import axios from "axios";
 import WithdrawRequest from "./WithdrawRequest";
+import useSound from 'use-sound';
+import noti from '../assets/noti.mp3'
 
+import Notifs from '../components/Notifs'
+const MINUTE_MS = 7000;
 
 function Panel({ setUser, setIsAdminLogin }) {
   const [rawData, setRawData] = useState([]);
   const [transfers, setTransfers] = useState([]);
   const [type, setType] = useState(-1);
+
+
+  
+  //noti sound
+  const [play] = useSound(noti);
+
+  //notifaticons
+  const [notifs,setNotifs] = useState([])
+
+  // withdraw request
+  const [reqs, setReqs] = useState([]);
+
+
+  //get with draw requests
+  const getWdRequest = () => {
+    axios
+      .get("https://payapi.sekizfx1.com/api/payments/all-wd-request")
+      .then(({ data }) => {
+        setReqs(data.requests);
+      });
+  };
+   //init withdraw request
+   useEffect(() => {
+    
+    getWdRequest()
+  }, []);
+
+  //withdraw Alert
+  useEffect(() => {
+    const interval = setInterval(() => {
+      axios
+      .get("https://payapi.sekizfx1.com/api/payments/all-wd-request")
+      .then(({ data }) => {
+        if(data.requests.length > reqs.length)
+        {
+            notifs.push(data.requests[0])
+            setNotifs(notifs)
+            play()
+            setReqs(data.requests);
+        }
+      });
+    
+    }, MINUTE_MS );
+  
+    return () => clearInterval(interval); // This represents the unmount function, in which you need to clear your interval to prevent memory leaks.
+  }, [reqs])
+
+
+
+  //Deposit Alert
+  useEffect(() => {
+    const interval = setInterval(() => {
+      axios
+      .get("https://payapi.sekizfx1.com/api/payments/all-transfers")
+      .then(({ data }) => {
+        if(data.transfers.length > rawData.length)
+        {
+
+          if(data.transfers[0].type === 0 )
+          {
+            notifs.push(data.transfers[0])
+            setNotifs(notifs)
+            play()
+          }
+          setRawData(data.transfers);
+          
+        }
+      });
+    
+    }, MINUTE_MS );
+  
+    return () => clearInterval(interval); // This represents the unmount function, in which you need to clear your interval to prevent memory leaks.
+  }, [rawData])
+
+  //init deposit-withdraw
   useEffect(() => {
     axios
       .get("https://payapi.sekizfx1.com/api/payments/all-transfers")
@@ -71,6 +150,10 @@ function Panel({ setUser, setIsAdminLogin }) {
     {
       return "Settings";
     }
+    else if(type === 4)
+    {
+      return "Withdraw Requests"
+    }
   };
 
   const renderFunction = () =>{
@@ -83,7 +166,7 @@ function Panel({ setUser, setIsAdminLogin }) {
     }
     else if(type === 4)
     {
-      return <WithdrawRequest/>
+      return <WithdrawRequest reqs ={reqs} getWdRequest={getWdRequest}/>
     }
     else{
 
@@ -139,6 +222,7 @@ function Panel({ setUser, setIsAdminLogin }) {
         setIsAdminLogin={setIsAdminLogin}
       />
       <h4 className="mt-5">{getTitle()}</h4>
+      <Notifs notifs={notifs}/>
       {renderFunction()}
     </>
   );
