@@ -96,8 +96,8 @@ function Withdraw({ setUser, user }) {
  
      Swal.fire({
        icon: "error",
-       title: "Oops...",
-       text: "Something went wrong",
+       title: "Veri Tabanı Hatası",
+       text: "Birşeyler ters gitti. Lütfen sayfayı yenileyiniz.",
      })
     })
    }, [])
@@ -118,7 +118,7 @@ function Withdraw({ setUser, user }) {
         if (data.error_number !== 0 && data.result === "failed") {
           Swal.fire({
             icon: "error",
-            title: "Oops...",
+            title: "UTIP Hatası",
             text: data.description,
           }).then(() => {
             setUser(null);
@@ -131,8 +131,8 @@ function Withdraw({ setUser, user }) {
         } else {
           Swal.fire({
             icon: "error",
-            title: "Oops...",
-            text: "Trader Error",
+            title: "UTIP Hatası",
+            text: "Oyuncu bulunamadı",
           }).then(() => {
             setUser(null);
             setLoading(false);
@@ -142,7 +142,7 @@ function Withdraw({ setUser, user }) {
       .catch(() => {
         Swal.fire({
           icon: "error",
-          title: "Oops...",
+          title: "UTIP Hatası",
           text: "System Error",
         }).then(() => {
           setUser(null);
@@ -209,19 +209,19 @@ function Withdraw({ setUser, user }) {
 
   const getType = (type) => {
     if (type === 0) {
-      return "Deposit";
+      return "Yatırma";
     } else if (type === 1) {
-      return "Withdraw";
+      return "Çekim";
     }
   };
   
   const getStatus = (status) => {
     if (status === 0) {
-      return "Pending";
+      return "Bekliyor";
     } else if (status === 1) {
-      return "Success";
+      return "Başarılı";
     } else if (status === 2) {
-      return "Time Out";
+      return "İptal";
     }
   };
   const getStatusColor = (status) => {
@@ -230,7 +230,7 @@ function Withdraw({ setUser, user }) {
     } else if (status === 1) {
       return "#09D541";
     } else if (status === 2) {
-      return "#FFC300";
+      return "#E11717";
     }
   };
 
@@ -262,8 +262,8 @@ function Withdraw({ setUser, user }) {
       <img alt="payment-logo" className="center" src={logo2} />
 
       
-      <h2 className="text-center mb-2 mt-2">Make a Withdraw</h2>
-      <h4 style = {{fontWeight:"bold"}} className="mb-2 mt-2">Current Balance : {curBalance} TRY</h4>
+      <h2 className="text-center mb-2 mt-2">Çekim Talebi</h2>
+      <h4 style = {{fontWeight:"bold"}} className="mb-2 mt-2">Güncel Bakiye : {curBalance} TL</h4>
       <Formik
         initialValues={{
           tc: "",
@@ -276,14 +276,14 @@ function Withdraw({ setUser, user }) {
           const errors = {};
           if (!values.amount || Number(values.amount) < 50) {
             errors.amount =
-              "The amount of Deposit (withdrawal) must not be less than 50.00 TRY";
+              "Çekim veya yatırma isteği minimum 50 TL olmalıdır.";
           }
           if (!values.tc || Number(values.tc).toString().length !== 11) {
-            errors.tc = "TC number must be 11 digits";
+            errors.tc = "TC No 11 haneli olmalıdır.";
           }
 
           if (values.iban === "") {
-            errors.iban = "IBAN can't empty";
+            errors.iban = "IBAN boş olamaz.";
           }
           return errors;
         }}
@@ -301,7 +301,7 @@ function Withdraw({ setUser, user }) {
               Swal.fire({
                 icon: "error",
                 title: "Oops...",
-                text: "You don't have account",
+                text: "Hesaba sahip değilsiniz.",
               }).then(() => {
                 setUser(null);
                 setLoading(false);
@@ -354,7 +354,7 @@ function Withdraw({ setUser, user }) {
                 }
                 Swal.fire({
                   icon: "success",
-                  text: "Your withdrawal request has been successfully completed. Please check the status in the transactions section.",
+                  text: "Para çekim talebiniz başarıyla tamamlandı. Lütfen işlemler bölümündeki durumu kontrol edin.",
                 });
                 setLoading(false);
                 setSubmitting(false);
@@ -363,7 +363,7 @@ function Withdraw({ setUser, user }) {
                 Swal.fire({
                   icon: "error",
                   title: "Oops...",
-                  text: "Payment system busy please try again later",
+                  text: "Sistem meşgul, lütfen daha sonra tekrar deneyin",
                 });
                 setLoading(false);
                 setSubmitting(false);
@@ -376,7 +376,7 @@ function Withdraw({ setUser, user }) {
               Swal.fire({
                 icon: "error",
                 title: "Oops...",
-                text: "Payment system busy please try again later",
+                text: "Sistem meşgul, lütfen daha sonra tekrar deneyin",
               });
              }
           }
@@ -384,7 +384,7 @@ function Withdraw({ setUser, user }) {
             Swal.fire({
               icon: "error",
               title: "Oops...",
-              text: "Payment system busy please try again later",
+              text: "Sistem meşgul, lütfen daha sonra tekrar deneyin",
             });
             
           }
@@ -405,7 +405,7 @@ function Withdraw({ setUser, user }) {
         }) => (
           <Form onSubmit={handleSubmit}>
             <Form.Group>
-              <Form.Label>Transfer From</Form.Label>
+              <Form.Label>Çekim Tipi</Form.Label>
               <br />
               <img className="my-3" alt="payment-img" src={paymentImg} />
               <Form.Control
@@ -465,7 +465,7 @@ function Withdraw({ setUser, user }) {
 
             {banks && (
               <Form.Group>
-                <Form.Label>Transfer Bank</Form.Label>
+                <Form.Label>Banka Tipi</Form.Label>
                 <Form.Control
                   onChange={(e)=>{
 
@@ -488,7 +488,7 @@ function Withdraw({ setUser, user }) {
             )}
 
             <Form.Group>
-              <Form.Label>Transfer To</Form.Label>
+              <Form.Label> Sekizfx Hesap Numarası</Form.Label>
               {loading ? (
                 <Spinner
                   className="ml-2"
@@ -523,7 +523,7 @@ function Withdraw({ setUser, user }) {
               )}
             </Form.Group>
             <Form.Group>
-              <Form.Label>Transfer Amount TRY(₺)</Form.Label>
+              <Form.Label>Çekim Miktarı TL(₺)</Form.Label>
               <Form.Control
                 onChange={handleChange}
                 onBlur={handleBlur}
@@ -541,7 +541,7 @@ function Withdraw({ setUser, user }) {
             </Form.Group>
 
             <Form.Group>
-              <Form.Label>Bank IBAN,Papara No, Creditcard No, Btc Address</Form.Label>
+              <Form.Label>IBAN,Papara Numarası, Kredi Kartı Numarası, Btc Adresi</Form.Label>
               <Form.Control
                 onChange={handleChange}
                 onBlur={handleBlur}
@@ -575,31 +575,31 @@ function Withdraw({ setUser, user }) {
 
             <Form.Group>
               <Form.Label>
-                Current rate of exchange : {exchangeRate.toFixed(6)}
+               Güncel Kur : {exchangeRate.toFixed(6)}
               </Form.Label>
             </Form.Group>
             {loading ? (
               <Spinner animation="border" variant="primary" />
             ) : (
               <Button variant="primary" type="submit" disabled={curBalance< Number(values.amount) || values.amount === "" || !withdrawStatus}>
-                Withdraw
+                Çekim Yap
               </Button>
             )}
           </Form>
         )}
       </Formik>
 
-      <h4 className="mt-5">Transfers</h4>
+      <h4 className="mt-5">İşlemler</h4>
       <Table striped bordered hover responsive>
         <thead>
           <tr>
             <th>#</th>
-            <th>Date</th>
-            <th>Where From</th>
-            <th>Where To</th>
-            <th>Type</th>
-            <th>Amount</th>
-            <th>Status</th>
+            <th>Tarih</th>
+            <th>Sistem Tipi</th>
+            <th>Sekizfx Hesap Numarası</th>
+            <th>Tip</th>
+            <th>Miktar</th>
+            <th>Durum</th>
           </tr>
         </thead>
         <tbody>
@@ -612,7 +612,7 @@ function Withdraw({ setUser, user }) {
                 <td>{item.from}</td>
                 <td>{item.to}</td>
                 <td>{getType(item.type)}</td>
-                <td>{item.amount} USD</td>
+                <td>{item.amount} TL</td>
                 <td
                   style={{
                     fontSize: "1.3rem",

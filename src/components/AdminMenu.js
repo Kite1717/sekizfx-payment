@@ -16,13 +16,13 @@ function AdminMenu({ setUser, setIsAdminLogin, setType }) {
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav">
         <Nav className="mr-auto">
-          <Nav.Link onClick={() => setType(-1)}>All</Nav.Link>
-          <Nav.Link onClick={() => setType(0)}>Deposits</Nav.Link>
-          <Nav.Link onClick={() => setType(1)}>Withdraws</Nav.Link>
-          <Nav.Link onClick={() => setType(2)}>Withdraw Cancels</Nav.Link>
-          <Nav.Link onClick={() => setType(4)}>Withdraw Request</Nav.Link>
-          <Nav.Link onClick={() => setType(3)}>Settings</Nav.Link>
-          <Nav.Link onClick={logOut}>Exit</Nav.Link>
+          <Nav.Link onClick={() => setType(-1)}>Bütün İşlemler</Nav.Link>
+          <Nav.Link onClick={() => setType(0)}>Yatırımlar</Nav.Link>
+          <Nav.Link onClick={() => setType(1)}>Çekimler</Nav.Link>
+         {/* <Nav.Link onClick={() => setType(2)}>Çekim İptaller</Nav.Link>*/} 
+          <Nav.Link onClick={() => setType(4)}>Çekim Talepleri</Nav.Link>
+          <Nav.Link onClick={() => setType(3)}>Ayarlar</Nav.Link>
+          <Nav.Link onClick={logOut}>Çıkış</Nav.Link>
         </Nav>
       </Navbar.Collapse>
     </Navbar>

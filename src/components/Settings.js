@@ -114,8 +114,8 @@ function Settings() {
         setLoading(false)
         Swal.fire({
             icon: "error",
-            title: "Oops...",
-            text: "Somethings went wrong",
+            title: "Sistem Hatası",
+            text: "Birşeyler ters gitti. Lütfen tekrar deneyiniz.",
           });
     })
 
@@ -124,13 +124,13 @@ function Settings() {
   return (
     <Container>   
       <Row>
-        <Col sm={2}>
+        <Col sm={4}>
           {loading ? (
             <Spinner animation="border" variant="success" />
           ) : (
             <>
               <div className="d-flex justify-content-between ">
-                <h5 className="mt-1 mr-3">Deposit</h5>
+                <h5 className="mt-1 mr-3">Yatırma İşlemi</h5>
                 <ToggleButton
                   value={depositToggle}
                   onToggle={() => {
@@ -140,7 +140,7 @@ function Settings() {
               </div>
 
               <div className="d-flex justify-content-between ">
-                <h5 className="mt-1 mr-3">WithDraw</h5>
+                <h5 className="mt-1 mr-3">Çekim İşlemi</h5>
                 <ToggleButton
                   value={withDrawToggle}
                   onToggle={() => {

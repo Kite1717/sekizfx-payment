@@ -9,7 +9,7 @@ import useSound from 'use-sound';
 import noti from '../assets/noti.mp3'
 
 import Notifs from '../components/Notifs'
-const MINUTE_MS = 7000;
+const MINUTE_MS = 9000;
 
 function Panel({ setUser, setIsAdminLogin }) {
   const [rawData, setRawData] = useState([]);
@@ -48,13 +48,14 @@ function Panel({ setUser, setIsAdminLogin }) {
       axios
       .get("https://payapi.sekizfx1.com/api/payments/all-wd-request")
       .then(({ data }) => {
-        if(data.requests.length > reqs.length)
+        if(data.requests.length > reqs.length) // notif alert
         {
             notifs.push(data.requests[0])
             setNotifs(notifs)
             play()
-            setReqs(data.requests);
+           
         }
+        setReqs(data.requests);
       });
     
     }, MINUTE_MS );
@@ -79,9 +80,10 @@ function Panel({ setUser, setIsAdminLogin }) {
             setNotifs(notifs)
             play()
           }
-          setRawData(data.transfers);
+          
           
         }
+        setRawData(data.transfers);
       });
     
     }, MINUTE_MS );
@@ -109,21 +111,21 @@ function Panel({ setUser, setIsAdminLogin }) {
 
   const getType = (type) => {
     if (type === 0) {
-      return "Deposit";
+      return "Yatırma";
     } else if (type === 1) {
-      return "WithDraw";
+      return "Çekim";
     } else if (type === 2) {
-      return "WithDrawCancel";
+      return "Çekim İptal";
     }
   };
 
   const getStatus = (status) => {
     if (status === 0) {
-      return "Pending";
+      return "Bekliyor";
     } else if (status === 1) {
-      return "Success";
+      return "Başarılı";
     } else if (status === 2) {
-      return "Time Out";
+      return "İptal";
     }
   };
   const getStatusColor = (status) => {
@@ -132,27 +134,27 @@ function Panel({ setUser, setIsAdminLogin }) {
     } else if (status === 1) {
       return "#09D541";
     } else if (status === 2) {
-      return "#FFC300";
+      return "#E11717";
     }
   };
 
   const getTitle = () => {
     if (type === -1) {
-      return "All Transfers";
+      return "Bütün İşlemler";
     } else if (type === 0) {
-      return "Deposits";
+      return "Yatırımlar";
     } else if (type === 1) {
-      return "Withdraws";
+      return "Çekimler";
     } else if (type === 2) {
-      return "Withdraw Cancels";
+      return "Çekim İptaller";
     }
     else if(type === 3)
     {
-      return "Settings";
+      return "Ayarlar";
     }
     else if(type === 4)
     {
-      return "Withdraw Requests"
+      return "Çekim Talepleri"
     }
   };
 
@@ -175,12 +177,12 @@ function Panel({ setUser, setIsAdminLogin }) {
         <thead>
           <tr>
             <th>#</th>
-            <th>Date</th>
-            <th>Where From</th>
-            <th>Where To</th>
-            <th>Type</th>
-            <th>Amount</th>
-            <th>Status</th>
+            <th>Tarih</th>
+            <th>Sistem Tipi</th>
+            <th>Oyuncu Numarası</th>
+            <th>Tip</th>
+            <th>Miktar</th>
+            <th>Durum</th>
           </tr>
         </thead>
         <tbody>
@@ -195,7 +197,7 @@ function Panel({ setUser, setIsAdminLogin }) {
                 <td>{item.from}</td>
                 <td>{item.to}</td>
                 <td>{getType(item.type)}</td>
-                <td>{item.amount} TRY</td>
+                <td>{item.amount} TL</td>
                 <td
                   style={{
                     fontSize: "1.3rem",

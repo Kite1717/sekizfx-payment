@@ -15,11 +15,11 @@ function Menu({ user, setUser, setClientPage }) {
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav">
         <Nav className="mr-auto">
-          <Nav.Link onClick={() => setClientPage("deposit")}>Deposit</Nav.Link>
+          <Nav.Link onClick={() => setClientPage("deposit")}>Yatırma</Nav.Link>
           <Nav.Link onClick={() => setClientPage("withdraw")}>
-            Withdraw
+            Çekim
           </Nav.Link>
-          <Nav.Link onClick={logOut}>Exit</Nav.Link>
+          <Nav.Link onClick={logOut}>Çıkış</Nav.Link>
         </Nav>
       </Navbar.Collapse>
     </Navbar>

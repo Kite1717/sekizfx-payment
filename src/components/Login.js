@@ -19,7 +19,7 @@ function Login({ setUser, setIsAdminLogin }) {
   return (
     <Container>
       <img alt="logo" className="center" src={logo} />
-      <h2 className="text-center">Login</h2>
+      <h2 className="text-center">Giriş</h2>
       <Row className="justify-content-md-center">
         <Col xs lg="4" className="text-center">
           <Formik
@@ -30,11 +30,11 @@ function Login({ setUser, setIsAdminLogin }) {
             validate={(values) => {
               const errors = {};
               if (!values.email) {
-                errors.email = "Your e-mail address cannot be empty.";
+                errors.email = "E-mail adresi boş olamaz.";
               } else if (
                 !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)
               ) {
-                errors.email = "Please enter a valid e-mail address.";
+                errors.email = "Lütfen geçerli bir e-mail adresi giriniz.";
               }
               return errors;
             }}
@@ -142,7 +142,7 @@ function Login({ setUser, setIsAdminLogin }) {
                     value={values.password}
                     name="password"
                     type="password"
-                    placeholder="Password"
+                    placeholder="Şifre"
                   />
                 </Form.Group>
                 {loading ? (
@@ -153,7 +153,7 @@ function Login({ setUser, setIsAdminLogin }) {
                     type="submit"
                     disabled={isSubmitting}
                   >
-                    Sign in
+                    Giriş Yap
                   </Button>
                 )}
               </Form>

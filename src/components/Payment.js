@@ -82,8 +82,8 @@ function Payment({ setUser, user }) {
 
     Swal.fire({
       icon: "error",
-      title: "Oops...",
-      text: "Something went wrong",
+      title: "Veri Tabanı Hatası",
+      text: "Birşeyler ters gitti. Lütfen sayfayı yenileyiniz.",
     })
    })
   }, [])
@@ -124,7 +124,7 @@ function Payment({ setUser, user }) {
         if (data.error_number !== 0 && data.result === "failed") {
           Swal.fire({
             icon: "error",
-            title: "Oops...",
+            title: "UTIP Hatası",
             text: data.description,
           }).then(() => {
             setUser(null);
@@ -136,8 +136,8 @@ function Payment({ setUser, user }) {
         } else {
           Swal.fire({
             icon: "error",
-            title: "Oops...",
-            text: "Trader Error",
+            title: "UTIP Hatası",
+            text:  "Oyuncu bulunamadı",
           }).then(() => {
             setUser(null);
             setLoading(false);
@@ -147,7 +147,7 @@ function Payment({ setUser, user }) {
       .catch(() => {
         Swal.fire({
           icon: "error",
-          title: "Oops...",
+          title: "UTIP Hatası",
           text: "System Error",
         }).then(() => {
           setUser(null);
@@ -214,19 +214,19 @@ function Payment({ setUser, user }) {
 
   const getType = (type) => {
     if (type === 0) {
-      return "Deposit";
+      return "Yatırma";
     } else if (type === 1) {
-      return "Withdraw";
+      return "Çekim";
     }
   };
 
   const getStatus = (status) => {
     if (status === 0) {
-      return "Pending";
+      return "Bekliyor";
     } else if (status === 1) {
-      return "Success";
+      return "Başarılı";
     } else if (status === 2) {
-      return "Time Out";
+      return "İptal";
     }
   };
   const getStatusColor = (status) => {
@@ -235,13 +235,13 @@ function Payment({ setUser, user }) {
     } else if (status === 1) {
       return "#09D541";
     } else if (status === 2) {
-      return "#FFC300";
+      return "#E11717";
     }
   };
   return (
     <Container>
       <img alt="payment-logo" className="center" src={logo2} />
-      <h2 className="text-center">Make a Deposit</h2>
+      <h2 className="text-center">Yatırma İşlemi</h2>
 
       <Formik
         initialValues={{
@@ -254,10 +254,10 @@ function Payment({ setUser, user }) {
           const errors = {};
           if (!values.amount || Number(values.amount) < 50) {
             errors.amount =
-              "The amount of Deposit (withdrawal) must not be less than 50.00 TRY";
+            "Çekim veya yatırma isteği minimum 50 TL olmalıdır.";
           }
           if (!values.tc || Number(values.tc).toString().length !== 11) {
-            errors.tc = "TC number must be 11 digits";
+            errors.tc = "TC No 11 haneli olmalıdır.";
           }
           return errors;
         }}
@@ -275,7 +275,7 @@ function Payment({ setUser, user }) {
               Swal.fire({
                 icon: "error",
                 title: "Oops...",
-                text: "You don't have account",
+                text: "Hesaba sahip değilsiniz.",
               }).then(() => {
                 setUser(null);
                 setLoading(false);
@@ -318,7 +318,7 @@ function Payment({ setUser, user }) {
                 Swal.fire({
                   icon: "error",
                   title: "Oops...",
-                  text: "Payment system busy please try again later",
+                  text: "Sistem meşgul, lütfen daha sonra tekrar deneyin",
                 });
                 setLoading(false);
                 setSubmitting(false);
@@ -328,7 +328,7 @@ function Payment({ setUser, user }) {
             Swal.fire({
               icon: "error",
               title: "Oops...",
-              text: "Payment system busy please try again later",
+              text: "Sistem meşgul, lütfen daha sonra tekrar deneyin",
             });
           }
        
@@ -347,7 +347,7 @@ function Payment({ setUser, user }) {
         }) => (
           <Form onSubmit={handleSubmit}>
             <Form.Group>
-              <Form.Label>Transfer From</Form.Label>
+              <Form.Label>Yatırma Tipi</Form.Label>
               <br />
               <img className="my-3" alt="payment-img" src={paymentImg} />
               <Form.Control
@@ -393,7 +393,7 @@ function Payment({ setUser, user }) {
               </Form.Control>
             </Form.Group>
             <Form.Group>
-              <Form.Label>Transfer To</Form.Label>
+              <Form.Label>Sekizfx Hesap Numarası</Form.Label>
               {loading ? (
                 <Spinner
                   className="ml-2"
@@ -419,7 +419,7 @@ function Payment({ setUser, user }) {
               )}
             </Form.Group>
             <Form.Group>
-              <Form.Label>Transfer Amount TRY(₺)</Form.Label>
+              <Form.Label>Yatırma Miktarı TL(₺)</Form.Label>
               <Form.Control
                 onChange={(e)=>{
                   setFieldValue("amount",e.target.value)
@@ -443,7 +443,7 @@ function Payment({ setUser, user }) {
             </Form.Group>
 
             <Form.Group>
-              <Form.Label>Amount to be credited  {from.id === 5 ? "BTC(฿)"  : "USD($)"}</Form.Label>
+              <Form.Label>Sahip olacağınız miktar  {from.id === 5 ? "BTC(฿)"  : "USD($)"}</Form.Label>
               <Form.Control
                 onChange={(e)=>{
 
@@ -486,13 +486,13 @@ function Payment({ setUser, user }) {
                 from.id === 5 ? 
                 (
                   <Form.Label>
-                 Current BTC/TRY Rate : {btcRate.last + " " + btcRate.symbol}
+                 Güncel BTC/TL Kuru : {btcRate.last + " " + btcRate.symbol}
                 </Form.Label>
                 )
                 : 
                 (
                   <Form.Label>
-                  Current rate of exchange : {exchangeRate.toFixed(6)}
+                   Güncel Kur : {exchangeRate.toFixed(6)}
                 </Form.Label>
                 )
               }
@@ -502,24 +502,24 @@ function Payment({ setUser, user }) {
               <Spinner animation="border" variant="primary" />
             ) : (
               <Button variant="primary" type="submit" disabled={isSubmitting || !depositStatus}>
-                Deposit
+                Yatırma
               </Button>
             )}
           </Form>
         )}
       </Formik>
 
-      <h4 className="mt-5">Transfers</h4>
+      <h4 className="mt-5">İşlemler</h4>
       <Table striped bordered hover responsive>
         <thead>
           <tr>
-            <th>#</th>
-            <th>Date</th>
-            <th>Where From</th>
-            <th>Where To</th>
-            <th>Type</th>
-            <th>Amount</th>
-            <th>Status</th>
+          <th>#</th>
+            <th>Tarih</th>
+            <th>Sistem Tipi</th>
+            <th>Sekizfx Hesap Numarası</th>
+            <th>Tip</th>
+            <th>Miktar</th>
+            <th>Durum</th>
           </tr>
         </thead>
         <tbody>
@@ -532,7 +532,7 @@ function Payment({ setUser, user }) {
                 <td>{item.from}</td>
                 <td>{item.to}</td>
                 <td>{getType(item.type)}</td>
-                <td>{item.amount} USD</td>
+                <td>{item.amount} TL</td>
                 <td
                   style={{
                     fontSize: "1.3rem",

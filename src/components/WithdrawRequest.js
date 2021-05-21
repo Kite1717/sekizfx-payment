@@ -1,38 +1,29 @@
 import React, { useState } from "react";
-import { Table, Button, Modal,Form} from "react-bootstrap";
+import { Table, Button, Modal, Form } from "react-bootstrap";
 import moment from "moment";
 import axios from "axios";
 import Swal from "sweetalert2";
 import speakeasy from "speakeasy";
 import qrcode from "qrcode";
 
-
-export default function WithdrawRequest({reqs,getWdRequest}) {
-
-
-
-
- 
-  
+export default function WithdrawRequest({ reqs, getWdRequest }) {
   const [show, setShow] = useState(false);
 
   const [googleAuthQrCodeImage, setGoogleAuthQrCodeImage] = useState(null);
 
   const [secret, setSecret] = useState(null);
 
-  const [qrInput , setQrInput] = useState("")
+  const [qrInput, setQrInput] = useState("");
 
-  const [payload,setPayload] = useState(null)
-
- 
+  const [payload, setPayload] = useState(null);
 
   const getStatus = (status) => {
     if (status === 0) {
-      return "Pending";
+      return "Bekliyor";
     } else if (status === 1) {
-      return "Accept";
+      return "Kabul Edildi";
     } else if (status === 2) {
-      return "Cancel";
+      return "İptal";
     }
   };
   const getStatusColor = (status) => {
@@ -68,55 +59,81 @@ export default function WithdrawRequest({reqs,getWdRequest}) {
       .then(() => {
         const from = getFromType(item.from);
         if (from) {
-          
-         const config =  { headers: {"Authorization" : `Bearer ${JSON.parse(localStorage.getItem("auth-admin")).token}`} }
+          const config = {
+            headers: {
+              Authorization: `Bearer ${
+                JSON.parse(localStorage.getItem("auth-admin")).token
+              }`,
+            },
+          };
           axios
-            .post("https://payapi.sekizfx1.com/api/payments/wd-wd-wd", {
-              name: item.name,
-              userId: item.userId,
-              tc: item.tc,
-              amount: item.amount,
-              from,
-              to: item.to,
-              iban: item.iban,
-              bankId: item.bankId,
-            },config)
+            .post(
+              "https://payapi.sekizfx1.com/api/payments/wd-wd-wd",
+              {
+                name: item.name,
+                userId: item.userId,
+                tc: item.tc,
+                amount: item.amount,
+                from,
+                to: item.to,
+                iban: item.iban,
+                bankId: item.bankId,
+              },
+              config
+            )
             .then(() => {
-              setQrInput("")
-              setShow(false)
+              setQrInput("");
+              setShow(false);
               Swal.fire({
                 icon: "success",
                 title: "Success",
-                text: "Withdrawal request has been accepted.",
+                text: "Çekim isteği başarıyla kabul edilmiştir.",
               });
               getWdRequest();
             })
             .catch(() => {
               Swal.fire({
                 icon: "error",
-                title: "Oops...",
-                text: "Something went wrong please try again.",
+                title: "Ödeme Sistemi Hatası",
+                text: "Birşeyler ters gitti.Lütfen tekrar deneyiniz.",
               });
+              axios.put(
+                "https://payapi.sekizfx1.com/api/payments/update-wd-request",
+                {
+                  id: item.id,
+                  status: 0,
+                }
+              );
             });
         } else {
           // else something wrong
           Swal.fire({
             icon: "error",
-            title: "Oops...",
-            text: "Something went wrong please try again.",
+            title: "Geçersiz Ödeme Yöntemi Hatası",
+            text: "Birşeyler ters gitti.Lütfen tekrar deneyiniz.",
           });
-          axios.put("https://payapi.sekizfx1.com/api/payments/update-wd-request", {
-            id: item.id,
-            status: 0,
-          });
+          axios.put(
+            "https://payapi.sekizfx1.com/api/payments/update-wd-request",
+            {
+              id: item.id,
+              status: 0,
+            }
+          );
         }
       })
       .catch(() => {
         Swal.fire({
           icon: "error",
-          title: "Oops...",
-          text: "Something went wrong please try again.",
+          title: "Veri tabanı Hatası",
+          text: "Birşeyler ters gitti.Lütfen tekrar deneyiniz.",
         });
+        axios.put(
+          "https://payapi.sekizfx1.com/api/payments/update-wd-request",
+          {
+            id: item.id,
+            status: 0,
+          }
+        );
       });
   };
 
@@ -127,32 +144,32 @@ export default function WithdrawRequest({reqs,getWdRequest}) {
         status: 2,
       })
       .then(() => {
-        setQrInput("")
-        setShow(false)
+        setQrInput("");
+        setShow(false);
         Swal.fire({
           icon: "success",
           title: "Success",
-          text: "Withdrawal request has been canceled.",
+          text: "Çekim talebi iptal edilmiştir.",
         });
         getWdRequest();
       })
       .catch(() => {
         Swal.fire({
           icon: "error",
-          title: "Oops...",
-          text: "Something went wrong please try again.",
+          title: "Veri tabanı Hatası",
+          text: "Birşeyler ters gitti.Lütfen tekrar deneyiniz.",
         });
       });
   };
 
   const acceptWithdraw = (item) => {
     qrControl();
-    setPayload({pay : item , type :1})
+    setPayload({ pay: item, type: 1 });
   };
 
   const cancelWithdraw = (id) => {
     qrControl();
-    setPayload({pay : id , type :0})
+    setPayload({ pay: id, type: 0 });
   };
 
   const qrControl = () => {
@@ -166,24 +183,23 @@ export default function WithdrawRequest({reqs,getWdRequest}) {
 
           if (!data.qr_code) {
             googleCreatedAuth();
-          }
-          else{
-            setGoogleAuthQrCodeImage(null)
-            setSecret(data.qr_code_secret)
+          } else {
+            setGoogleAuthQrCodeImage(null);
+            setSecret(data.qr_code_secret);
           }
         })
         .catch((err) => {
           Swal.fire({
             icon: "error",
-            title: "Oops...",
-            text: "Something went wrong please try again.",
+            title: "Veri tabanı Hatası",
+            text: "Birşeyler ters gitti.Lütfen tekrar deneyiniz.",
           });
         });
     } else {
       Swal.fire({
         icon: "error",
-        title: "Oops...",
-        text: "Something went wrong please try again.",
+        title: "Sistem Dışı Kullanıcı",
+        text: "Birşeyler ters gitti.Lütfen tekrar deneyiniz.",
       });
     }
   };
@@ -199,78 +215,73 @@ export default function WithdrawRequest({reqs,getWdRequest}) {
     setSecret(secret.ascii);
   };
 
-
-  const googleAuthEncoding = ()  =>{
-
+  const googleAuthEncoding = () => {
     Swal.fire({
-      title: 'Please Wait ....',
+      title: "Lütfen Bekleyin ....",
       timer: 999999,
       showConfirmButton: false,
-    })
+    });
 
     const verified = speakeasy.totp.verify({
       secret: secret,
-      encoding: 'ascii',
-      token: qrInput
-    })
+      encoding: "ascii",
+      token: qrInput,
+    });
     if (verified === true) {
       const id = JSON.parse(localStorage.getItem("auth-admin")).user.id;
 
       axios
         .get("https://payapi.sekizfx1.com/api/user/qr/control/" + id)
         .then(({ data }) => {
-
           if (!data.qr_code) {
             axios
-            .post('https://payapi.sekizfx1.com/api/user/qr/set-info', {
-              id,
-              qr_code:true,
-              qr_code_image: googleAuthQrCodeImage,
-              qr_code_secret: secret
-            })
-            .then(res => {
-              if(payload.type === 1) //accept
-              {
-                  acceptProcess(payload.pay)
-              }
-              else if(payload.type === 0){ // cancel
-                refuseProcess(payload.pay)
-              }
-            }).catch(() => {
-              Swal.fire({
-                icon: 'error',
-                title: 'Ops...',
-                text: 'Wrong code please try again.'
+              .post("https://payapi.sekizfx1.com/api/user/qr/set-info", {
+                id,
+                qr_code: true,
+                qr_code_image: googleAuthQrCodeImage,
+                qr_code_secret: secret,
               })
-            })
-          }
-          else{
-            if(payload.type === 1) //accept
-            {
-                acceptProcess(payload.pay)
+              .then((res) => {
+                if (payload.type === 1) {
+                  //accept
+                  acceptProcess(payload.pay);
+                } else if (payload.type === 0) {
+                  // cancel
+                  refuseProcess(payload.pay);
+                }
+              })
+              .catch(() => {
+                Swal.fire({
+                  icon: "error",
+                  title: "Veri tabanı hatası",
+                  text: "Birşeyler ters gitti.Lütfen tekrar deneyiniz.",
+                });
+              });
+          } else {
+            if (payload.type === 1) {
+              //accept
+              acceptProcess(payload.pay);
+            } else if (payload.type === 0) {
+              // cancel
+              refuseProcess(payload.pay);
             }
-            else if(payload.type === 0){ // cancel
-              refuseProcess(payload.pay)
-            }
-
           }
         })
         .catch((err) => {
           Swal.fire({
             icon: "error",
-            title: "Oops...",
-            text: "Something went wrong please try again.",
+            title: "Veri tabanı hatası",
+            text: "Birşeyler ters gitti.Lütfen tekrar deneyiniz.",
           });
         });
-     
     } else {
       Swal.fire({
-        icon: 'error',
-        title: 'Ops...',
-        text: 'Something wents wrong'
-      })
+        icon: "error",
+        title: "Kod Hatası",
+        text: "Kodunuz Eşlemişmiyor.",
+      });
     }
-  }
+  };
 
   return (
     <>
@@ -278,16 +289,16 @@ export default function WithdrawRequest({reqs,getWdRequest}) {
         <thead>
           <tr>
             <th>#</th>
-            <th>Date</th>
-            <th>Where From</th>
-            <th>Where To</th>
-            <th>Amount</th>
-            <th>UserId</th>
-            <th>Name</th>
-            <th>Iban</th>
+            <th>Tarih</th>
+            <th>Sistem Tipi</th>
+            <th>Oyuncu Numarası</th>
+            <th>Miktar</th>
+            <th>Kullancı ID</th>
+            <th>Ad Soyad</th>
+            <th>IBAN</th>
             <th>TC</th>
-            <th>Status</th>
-            <th>Actions</th>
+            <th>Durum</th>
+            <th>İşlemler</th>
           </tr>
         </thead>
         <tbody>
@@ -300,7 +311,7 @@ export default function WithdrawRequest({reqs,getWdRequest}) {
                 <td>{item.from}</td>
                 <td>{item.to}</td>
                 <td style={{ fontWeight: "bold", fontSize: "1.3rem" }}>
-                  {item.amount} TRY
+                  {item.amount} TL
                 </td>
                 <th>{item.userId}</th>
                 <th>{item.name}</th>
@@ -324,13 +335,13 @@ export default function WithdrawRequest({reqs,getWdRequest}) {
                         className="mr-2"
                         variant="success"
                       >
-                        Confirm
+                        Kabul Et
                       </Button>
                       <Button
                         onClick={() => cancelWithdraw(item.id)}
                         variant="danger"
                       >
-                        Refuse
+                        Reddet
                       </Button>
                     </>
                   )}
@@ -343,25 +354,33 @@ export default function WithdrawRequest({reqs,getWdRequest}) {
 
       <Modal show={show} onHide={() => setShow(!show)}>
         <Modal.Header closeButton>
-          <Modal.Title>Security Control</Modal.Title>
+          <Modal.Title>Güvenlik Kontrolü</Modal.Title>
         </Modal.Header>
         <Modal.Body className="d-flex-column justify-content-center align-items-center">
-          {googleAuthQrCodeImage && <img alt ="qr-code"  src={googleAuthQrCodeImage} />}
+          {googleAuthQrCodeImage && (
+            <img alt="qr-code" src={googleAuthQrCodeImage} />
+          )}
 
-  
-          
-            <Form.Group>
-              <Form.Label>Code</Form.Label>
-              <Form.Control  value = {qrInput}onChange  ={ (e) => setQrInput(e.target.value)} type="text" placeholder="Enter the code" />
-            </Form.Group>
-            
+          <Form.Group>
+            <Form.Label>Kod</Form.Label>
+            <Form.Control
+              value={qrInput}
+              onChange={(e) => setQrInput(e.target.value)}
+              type="text"
+              placeholder="Enter the code"
+            />
+          </Form.Group>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setShow(!show)}>
-            Close
+            Kapat
           </Button>
-          <Button variant="warning" onClick = {() => googleAuthEncoding()} type="button">
-              Check
+          <Button
+            variant="warning"
+            onClick={() => googleAuthEncoding()}
+            type="button"
+          >
+            Eşleştir
           </Button>
         </Modal.Footer>
       </Modal>

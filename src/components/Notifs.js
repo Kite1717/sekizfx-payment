@@ -9,9 +9,9 @@ function Notifs({ notifs }) {
             <Row key={index}>
               <Col sm={8}>
                 <Alert variant="success">
-                  <strong>Deposit</strong>&nbsp;&nbsp;&nbsp;&nbsp;Amount :{" "}
-                  <strong>{item.amount}</strong> TRY&nbsp;&nbsp;&nbsp;&nbsp;To :{" "}
-                  {item.to}&nbsp;&nbsp;&nbsp;&nbsp; From :{" "}
+                  <strong>Yatırma</strong>&nbsp;&nbsp;&nbsp;&nbsp;Miktarı :{" "}
+                  <strong>{item.amount}</strong> TL&nbsp;&nbsp;&nbsp;&nbsp;To :{" "}
+                  {item.to}&nbsp;&nbsp;&nbsp;&nbsp; Yatırma Tipi :{" "}
                   <strong>{item.from}</strong>
                 </Alert>
               </Col>
@@ -22,10 +22,10 @@ function Notifs({ notifs }) {
             <Row key={index}>
               <Col sm={8}>
                 <Alert variant="danger">
-                  <strong>Withdraw Request</strong>
-                  &nbsp;&nbsp;&nbsp;&nbsp;Amount :{" "}
-                  <strong>{item.amount}</strong> TRY&nbsp;&nbsp;&nbsp;&nbsp;To :{" "}
-                  {item.to}&nbsp;&nbsp;&nbsp;&nbsp; From :{" "}
+                  <strong>Çekim İsteği</strong>
+                  &nbsp;&nbsp;&nbsp;&nbsp;Miktarı :{" "}
+                  <strong>{item.amount}</strong> TL&nbsp;&nbsp;&nbsp;&nbsp;To :{" "}
+                  {item.to}&nbsp;&nbsp;&nbsp;&nbsp; Çekim Tipi :{" "}
                   <strong>{item.from}</strong>
                 </Alert>
               </Col>
